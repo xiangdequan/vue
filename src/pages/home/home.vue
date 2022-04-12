@@ -81,7 +81,7 @@ export default {
     width: 100%;
     position: relative;
     top: 6%;
-    overflow-y: scroll !important;
+    overflow-y: scroll;
 
     //去除滚动条样式
     &::-webkit-scrollbar{
@@ -91,7 +91,6 @@ export default {
       //顶部导航栏内容样式
       .van-pull-refresh{
         width: 100%;
-        margin: 0 auto;
       }
   }
   //定义混合用于控制span样式
@@ -124,7 +123,7 @@ export default {
     }
     //项目样式
     .grid-shops-show{
-      height: 250px !important;
+      height: 240px !important;
       border: 1px solid red;
       //图片样式
       .van-image{

@@ -106,7 +106,7 @@ export default {
     //点击跳转首页
     backHome(){
       //跳转
-      this.$router.replace("/home");
+      this.$router.replace("/view");
     }
   },
 }
