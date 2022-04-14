@@ -6,14 +6,20 @@
   <div class="shops-item" v-for="item in shops" :key="item.id" @click="getMore(item.id)">
     <!--  :src="item.url" 374px -->
     <img src="../assets/oppo.jpg"/>
-    <span>hhhhhfff</span>
-    <span>分期付款  正品保证</span>
-    <span>￥999.99</span>
+    <span>OPPO K9 Pro 5G智能手机游戏手机拍照手机轻薄机身</span>
+    <span>分期付款  正品保证  假一赔十</span>
+    <span>
+      <van-tag type="danger" :style="{width:width,fontSize:fontSize}">百亿补贴</van-tag>
+      <a>￥999.99</a>
+    </span>
   </div>
 </div>
 </template>
 
 <script>
+//引入vant
+import {Tag} from 'vant';
+
 export default {
   name: "shops",
   //父元素传递商品数据
@@ -22,10 +28,14 @@ export default {
       type:Array
     }
   },*/
+  props:["width","fontSize"],//标签宽度 字体大小
+  components:{
+    [Tag.name]:Tag
+  },
   data(){
     return {
       shops:[
-        {},{},{},{},{},{},{},{},{},{}
+        {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
       ]
     }
   },
@@ -49,11 +59,12 @@ export default {
 
   //商品项
   .shops-item{
-    height: 254px;
-    width: 48.5%;
-    margin: 1% 1% 0;
+    height: 30%;
+    width: 47.75%;
+    margin: 0 1.5% 1.6%;
     box-sizing: border-box;
-    border: 1px solid red;
+    background-color: white;
+    border-radius: 8px;
 
     //偶数项外边距
     &:nth-of-type(even){
@@ -64,17 +75,32 @@ export default {
     img{
       height: 187px; //187px 2x 374px
       width: 100%;
-      background: yellow;
+      border-radius: 8px 8px 0 0;
     }
 
     //商品介绍
     span{
-      height: 20px;
-      line-height: 20px;
-      width: 98%;
-      padding-left: 2%;
-      background: blue;
+      height: 18px;
+      line-height: 18px;
+      width: 97%;
+      padding-left: 3%;
+      //background: blue;
       display: block;
+      overflow: hidden;
+      font-size: 14px;
+    }
+    span:last-child{
+      margin-top: 3px;
+      padding-right: 5%;
+      height: 21px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+
+      a{
+        font-size: 19px;
+        color: red;
+      }
     }
   }
 }

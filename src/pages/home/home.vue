@@ -13,8 +13,8 @@
             <span>待开发</span>
           </van-grid-item>
         </van-grid>
-<!-- 商品展示区       -->
-        <shops/>
+<!-- 商品展示区   需要传数据  标签的宽度   -->
+        <shops width="34%" fontSize="14px"/>
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
@@ -51,7 +51,7 @@ export default {
     }
   },
   methods:{
-    //下拉刷新
+    //下拉刷新 axios更新
     onRefresh() {
       setTimeout(() => {
         Toast('刷新成功');
