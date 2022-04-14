@@ -1,5 +1,5 @@
 <template>
-  <van-search v-model="value" placeholder="请输入搜索关键词" @focus="search" shape="round" @search="service"/>
+  <van-search placeholder="请输入搜索关键词" @focus="search" shape="round"/>
 </template>
 
 <script>
@@ -11,21 +11,11 @@ export default {
   components:{
     [Search.name]:Search,
   },
-  data(){
-    return {
-      value:''
-    }
-  },
   methods:{
     //搜索跳转
     search(){
       this.$router.push('/search');
     },
-    //搜索
-    service(){
-      alert(111)
-    }
-
   }
 }
 </script>

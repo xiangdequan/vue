@@ -9,6 +9,7 @@
         v-model="value"
         show-action
         shape="round"
+        :autofocus="true"
         :clearable="true"
         placeholder="请输入搜索关键词"
         @search="onSearch"
@@ -88,7 +89,7 @@ console.log(val,e)
     width: 100%;
     position: fixed;
     top: 0;
-    z-index: 3;
+    z-index: 4;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -122,8 +123,13 @@ console.log(val,e)
   //商品展示区
   .shopShow{
     position: relative;
-    height: 86%;
-    top: 14%;
+    height: 87.5%;
+    top: 12.5%;
+    overflow-y: scroll;
+    &::-webkit-scrollbar{
+      width: 0;
+      height: 0;
+    }
   }
 }
 </style>
