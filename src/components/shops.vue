@@ -1,4 +1,9 @@
-<!--商品展示组件-->
+<!--商品展示组件
+prop样式: width:标签宽度(默认34%)
+fontSize:标签字体大小(默认14px)
+spanSize:span标签字体大小(默认14px)
+aSize:a标签字体大小(默认18px)
+-->
 <template>
 <!-- 商品展示组件 -->
 <div id="shops">
@@ -6,11 +11,11 @@
   <div class="shops-item" v-for="item in shops" :key="item.id" @click="getMore(item.id)">
     <!--  :src="item.url" 374px -->
     <img src="../assets/oppo.jpg"/>
-    <span>OPPO K9 Pro 5G智能手机游戏手机拍照手机轻薄机身</span>
-    <span>分期付款  正品保证  假一赔十</span>
+    <span :style="{fontSize:spanSize}">OPPO K9 Pro 5G智能手机游戏手机拍照手机轻薄机身</span>
+    <span :style="{fontSize:spanSize}">分期付款  正品保证  假一赔十</span>
     <span>
       <van-tag type="danger" :style="{width:width,fontSize:fontSize}">百亿补贴</van-tag>
-      <a>￥999.99</a>
+      <a :style="{fontSize:aSize}">￥999.99</a>
     </span>
   </div>
 </div>
@@ -28,7 +33,7 @@ export default {
       type:Array
     }
   },*/
-  props:["width","fontSize"],//标签宽度 字体大小
+  props:["width","fontSize","spanSize","aSize"],//标签宽度 标签字体大小  span字体大小
   components:{
     [Tag.name]:Tag
   },
@@ -73,7 +78,8 @@ export default {
 
     //img商品详情
     img{
-      height: 187px; //187px 2x 374px
+      height: 70%;
+      //height: 187px; //187px 2x 374px
       width: 100%;
       border-radius: 8px 8px 0 0;
     }
@@ -97,6 +103,11 @@ export default {
       display: flex;
       justify-content: space-between;
 
+      // 标签宽度默认
+      .van-tag{
+        width: 34%;
+        font-size: 14px;
+      }
       a{
         font-size: 19px;
         color: red;

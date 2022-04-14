@@ -14,7 +14,7 @@
           </van-grid-item>
         </van-grid>
 <!-- 商品展示区   需要传数据  标签的宽度   -->
-        <shops width="34%" fontSize="14px"/>
+        <shops />
       </van-pull-refresh>
     </van-tab>
   </van-tabs>

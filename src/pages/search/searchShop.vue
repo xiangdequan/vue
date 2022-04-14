@@ -82,7 +82,7 @@ console.log(val,e)
 <style lang="less" scoped>
 #searchShop{
   height: 100%;
-
+  background-color: #F8F9F9;
   //顶部内容
   .top{
     height: 6%;
@@ -123,8 +123,7 @@ console.log(val,e)
   //商品展示区
   .shopShow{
     position: relative;
-    height: 87.5%;
-    top: 12.5%;
+    top: 13.2%;
     overflow-y: scroll;
     &::-webkit-scrollbar{
       width: 0;

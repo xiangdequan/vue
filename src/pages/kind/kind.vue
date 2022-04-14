@@ -11,12 +11,12 @@
     <div class="shopBar">
 <!-- 轮播     -->
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item><img src="../../assets/oppo.jpg"></van-swipe-item>
-        <van-swipe-item>2</van-swipe-item>
-        <van-swipe-item>3</van-swipe-item>
-        <van-swipe-item>4</van-swipe-item>
+        <van-swipe-item><img src="../../assets/111.jpg"></van-swipe-item>
+        <van-swipe-item><img src="../../assets/222.jpg"></van-swipe-item>
+        <van-swipe-item><img src="../../assets/333.jpg"></van-swipe-item>
+        <van-swipe-item><img src="../../assets/444.jpg"></van-swipe-item>
       </van-swipe>
-        <shops width="36%" fontSize="12px" class="shop"/>
+        <shops width="36%" fontSize="12px" spanSize="12px" aSize="15px" class="shop"/>
     </div>
   </div>
 
@@ -105,7 +105,7 @@ export default {
         color: #fff;
 
         img{
-          width: 308px;
+          width: 100%;
         }
       }
 
