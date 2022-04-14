@@ -97,7 +97,7 @@ router.beforeEach((to,from,next)=>{
                         next();
                     }else{
                         //无效去登录
-                        router.replace('/login')
+                        router.push('/login')
                     }
                 })
         }

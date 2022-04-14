@@ -14,12 +14,7 @@
           </van-grid-item>
         </van-grid>
 <!-- 商品展示区       -->
-        <van-grid :border="false" :column-num="2" class="grid-shops">
-          <van-grid-item v-for="item in 200" :key="item" class="grid-shops-show" >
-            <van-image src="https://img01.yzcdn.cn/vant/apple-1.jpg" />
-            <span>商品</span>
-          </van-grid-item>
-        </van-grid>
+        <shops/>
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
@@ -30,7 +25,8 @@
 //导入vant组件
 import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem,Image} from "vant";
 //导入搜索框
-import search from "../../components/search";
+import search from "@/components/search";
+import shops from "@/components/shops";
 
 export default {
   name: "home",
@@ -42,7 +38,8 @@ export default {
     [Grid.name]:Grid,
     [GridItem.name]:GridItem,
     [Image.name]:Image,
-    search
+    search,
+    shops
   },
   data() {
     return {

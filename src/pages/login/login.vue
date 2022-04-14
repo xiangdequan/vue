@@ -50,9 +50,9 @@ export default {
   },
   data() {
     return {
-      userName: '',
-      password: '',
-      show: true,
+      userName: '', //用户名
+      password: '', //密码
+      show: true,  //控制登录/注册
     };
   },
   methods: {
@@ -96,6 +96,8 @@ export default {
           }
           //提示登录成功 组件库自带方法
           Toast.success(tip+'成功');
+          //跳转页面
+          this.$router.replace("/");
         }else{
           Toast.fail(res.data.msg);
         }

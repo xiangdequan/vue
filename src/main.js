@@ -23,6 +23,7 @@ Vue.use(vueRouter,axios,less,lessLoader);
 //192.168.43.83
 // axios.defaults.baseURL = "http://192.168.43.83/";
 axios.defaults.baseURL = "http://10.20.25.15/";
+// axios.defaults.baseURL = "http://10.20.140.50/";
 
 //阻止vue产生生产提示
 Vue.config.productionTip = false
