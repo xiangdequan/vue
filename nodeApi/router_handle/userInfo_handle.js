@@ -4,9 +4,9 @@ const db = require("../mysql/mysql");
 //info根据用户带来的token信息获取数据库中信息
 exports.info = (req, res)=>{
     //定义sql语句
-    const sql = 'select userName, id, status  from users where id=?';
+    const sql = 'select * from users where userName=?';
     //查询信息   通过解析成功后生成的user属性中的数据查询
-    db.query(sql,req.user.id,(err,results)=>{
+    db.query(sql,req.user.userName,(err,results)=>{
         //判断是否出错
         if(err) return res.rep("请稍后再试");
         //判断是否找到数据

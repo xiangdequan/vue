@@ -8,6 +8,10 @@
 
 export default {
   name: 'App',
+  beforeMount() {
+    //触发vuex中的方法  获取所有商品数据
+    this.$store.dispatch('allShops/getAllShops');
+  }
 }
 </script>
 

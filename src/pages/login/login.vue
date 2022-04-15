@@ -12,14 +12,22 @@
         v-model="userName"
         name="userName"
         label="用户名"
-        placeholder="用户名"
+        placeholder="请输入用户名"
     />
     <van-field
         v-model="password"
         type="password"
         name="password"
         label="密码"
-        placeholder="密码"
+        placeholder="请输入密码"
+    />
+    <van-field
+        v-show="!show"
+        v-model="info"
+        type="text"
+        name="昵称"
+        label="昵称"
+        placeholder="请输入昵称"
     />
     <div class="submit" v-show="show">
       <van-button round block type="info" @click="loginORregister">登录</van-button>
@@ -52,6 +60,7 @@ export default {
     return {
       userName: '', //用户名
       password: '', //密码
+      info:'',//昵称
       show: true,  //控制登录/注册
     };
   },
@@ -67,6 +76,7 @@ export default {
     loginORregister(e) {
       let userName = this.userName;
       let password = this.password;
+      let info = this.info;
       //储存点击按钮的文本
       let text = e.target.innerText;
       //定义url存地址
@@ -77,6 +87,7 @@ export default {
       if (userName === '' || userName.length < 5 || userName.length > 12) return Toast("用户名长度6~12位");
       //验证
       if (password === '' || password.length < 5 || password.length > 12) return Toast("密码长度6~12位");
+      if(text === '注册')  if (info.length > 6 || info.length < 3) return Toast("昵称长度3~6");//只有注册才需要验证昵称
       //根据点击的按钮实现相关功能
       if(text === "登录"){
         tip = "登录";
@@ -86,14 +97,12 @@ export default {
         url = 'api/register'
       }
       //发送请求验证登录
-      axios.post(url,{userName,password}).then(res=>{
+      axios.post(url,{userName,password,info}).then(res=>{
         //根据返回的数据判断是否登录成功
         if(!res.data.code){
-          //当登录时，成功后储存token
-          if(text === "登录"){
+          //当登录、注册时，成功后储存token
             //储存返回token
             window.localStorage.setItem("token",res.data.token);
-          }
           //提示登录成功 组件库自带方法
           Toast.success(tip+'成功');
           //跳转页面
@@ -130,7 +139,7 @@ export default {
   .logo{
     width: 289.5px;
     height: 211px;
-    margin: 16% auto 0;
+    margin: 8% auto 0;
     background: url("../../assets/sg1.png");
     background-size: 100%;
   }
@@ -140,7 +149,7 @@ export default {
     margin: 0 5%;
     position: relative;
     left: 0;
-    top: 8%;
+    top: 5%;
     //表单提交按钮div样式
     .submit{
       margin-top: 16px;

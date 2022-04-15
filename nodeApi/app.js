@@ -8,10 +8,16 @@ const cors = require("cors");
 const userRouter = require("./router/user");
 //导入用户信息路由
 const userInfo = require("./router/userInfo");
+//导入添加/获取商品api
+const shops = require("./router/shops");
 //导入验证插件
 const joi = require("joi");
 //实例化express对象
 const app = express();
+//导入bodyParser模块  用于设置处理请求数据最大长度、空间大小
+const bodyParser = require('body-parser');
+app.use(bodyParser.json({limit:'10mb'}));  //用于设置处理json格式请求数据大小
+app.use(bodyParser.urlencoded({limit:'10mb',extended:true})); //用于设置处理urlencoded格式请求数据大小
 
 //全局注册cors解决跨域问题
 app.use(cors());
@@ -44,6 +50,8 @@ app.use((req,res,next)=>{
 app.use("/api",userRouter);
 //注册用户信息路由，添加user前缀  功能:获取用户信息、修改密码
 app.use("/user",userInfo);
+//添加/获取商品
+app.use('/api',shops)
 
 //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
 app.use((err,req,res,next)=>{

@@ -4,19 +4,16 @@
   <search/>
   <!-- 主体内容 -->
   <div class="content">
-    <van-sidebar v-model="activeKey" @change="updateShop">
+    <van-sidebar v-model="activeKey" @change="searchByTitle">
       <van-sidebar-item v-for="item in kinds" :key="item" :title="item" />
     </van-sidebar>
   <!-- 对应导航栏内容   -->
     <div class="shopBar">
 <!-- 轮播     -->
-      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item><img src="../../assets/111.jpg"></van-swipe-item>
-        <van-swipe-item><img src="../../assets/222.jpg"></van-swipe-item>
-        <van-swipe-item><img src="../../assets/333.jpg"></van-swipe-item>
-        <van-swipe-item><img src="../../assets/444.jpg"></van-swipe-item>
+      <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white">
+        <van-swipe-item v-for="item in shops" :key="item.id"><img :src="item.img"></van-swipe-item>
       </van-swipe>
-        <shops width="36%" fontSize="12px" spanSize="12px" aSize="15px" class="shop"/>
+        <shops width="36%" fontSize="12px" spanSize="12px" aSize="15px" class="shop" :shops="shops"/>
     </div>
   </div>
 
@@ -24,13 +21,17 @@
 </template>
 
 <script>
-import Search from "../../components/search";
 //导入vant
 import { Sidebar, SidebarItem,Swipe,SwipeItem} from 'vant';
+//导入search、shops组件
 import Shops from "@/components/shops";
+import Search from "../../components/search";
+//导入混合
+import mixin from "@/mixin/mixin";
 
 export default {
   name: "kind",
+  mixins:[mixin], //注册混合用于处理商品信息分类展示
   components:{
     Shops,
     Search,
@@ -42,21 +43,6 @@ export default {
   data(){
     return {
       activeKey:0, //用于存储点击索引
-      shops:[], //用于存储商品数据
-      //定义导航栏标题
-      kinds:["推荐","食品","手机","水果","鞋包","男装","百货","女装","电器","医药","电脑","美妆","家纺","运动","车品","玩乐"],
-    }
-  },
-  methods:{
-    //导航栏改变后更改对应数据
-    updateShop(a){
-      //组件自带 默认参数为点击导航栏索引
-      //获取点击导航栏的名称
-      //发送axios请求获取相关分类数据
-      //将的到的数据赋值给shops
-      //渲染页面
-      let kind = this.kinds[a];
-      console.log(kind)
     }
   }
 }

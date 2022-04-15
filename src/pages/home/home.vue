@@ -14,7 +14,7 @@
           </van-grid-item>
         </van-grid>
 <!-- 商品展示区   需要传数据  标签的宽度   -->
-        <shops />
+        <shops :shops="shops"/>
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
@@ -27,9 +27,12 @@ import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem,Image} from "vant";
 //导入搜索框
 import search from "@/components/search";
 import shops from "@/components/shops";
+//导入混合
+import mixin from "@/mixin/mixin";
 
 export default {
   name: "home",
+  mixins:[mixin], //注册混合用于处理商品信息分类展示
   components:{
     [Toast.name]:Toast,
     [PullRefresh.name]:PullRefresh,
@@ -46,8 +49,6 @@ export default {
       //记录刷新次数 每刷新一次为1 表示成功 然后重新归0
       count: 0,
       isLoading: false,
-      //定义导航栏标题
-      kinds:["推荐","食品","手机","水果","鞋包","男装","百货","女装","电器","医药","电脑","美妆","家纺","运动","车品","玩乐"]
     }
   },
   methods:{
@@ -59,11 +60,7 @@ export default {
         this.count++;
       }, 1000);
     },
-    //导航栏点击事件
-    searchByTitle(name,title){
-      console.log(title)
-    },
-  }
+  },
 }
 </script>
 

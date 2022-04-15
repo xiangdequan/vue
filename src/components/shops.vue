@@ -10,12 +10,12 @@ aSize:a标签字体大小(默认18px)
   <!-- 商品项 根据父组件传过来的数据动态渲染 商品图片、商品描述 通过id获取商品的详情页-->
   <div class="shops-item" v-for="item in shops" :key="item.id" @click="getMore(item.id)">
     <!--  :src="item.url" 374px -->
-    <img src="../assets/oppo.jpg"/>
-    <span :style="{fontSize:spanSize}">OPPO K9 Pro 5G智能手机游戏手机拍照手机轻薄机身</span>
-    <span :style="{fontSize:spanSize}">分期付款  正品保证  假一赔十</span>
+    <img :src="item.img"/>
+    <span :style="{fontSize:spanSize}">{{item.font}}</span>
+    <span :style="{fontSize:spanSize}">{{item.promise}}</span>
     <span>
-      <van-tag type="danger" :style="{width:width,fontSize:fontSize}">百亿补贴</van-tag>
-      <a :style="{fontSize:aSize}">￥999.99</a>
+      <van-tag type="danger" :style="{width:width,fontSize:fontSize}">{{item.discount}}</van-tag>
+      <a :style="{fontSize:aSize}">{{item.price}}</a>
     </span>
   </div>
 </div>
@@ -28,20 +28,29 @@ import {Tag} from 'vant';
 export default {
   name: "shops",
   //父元素传递商品数据
- /* props:{
+  props:{
     shops:{
       type:Array
+    },
+    width:{  //标签宽度
+      type:String
+    },
+    fontSize:{  //标签字体大小
+      type:String
+    },
+    spanSize:{  // span字体大小
+      type:String
+    },
+    aSize:{ //a标签字体大小，价格
+      type: String
     }
-  },*/
-  props:["width","fontSize","spanSize","aSize"],//标签宽度 标签字体大小  span字体大小
+  },
   components:{
     [Tag.name]:Tag
   },
   data(){
     return {
-      shops:[
-        {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
-      ]
+
     }
   },
   methods:{
@@ -95,6 +104,12 @@ export default {
       overflow: hidden;
       font-size: 14px;
     }
+
+    span:nth-of-type(2){
+      color: green;
+      letter-spacing: 1px;
+    }
+
     span:last-child{
       margin-top: 3px;
       padding-right: 5%;
