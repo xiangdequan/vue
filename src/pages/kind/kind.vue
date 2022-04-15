@@ -13,7 +13,15 @@
       <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white">
         <van-swipe-item v-for="item in shops" :key="item.id"><img :src="item.img"></van-swipe-item>
       </van-swipe>
-        <shops width="36%" fontSize="12px" spanSize="12px" aSize="15px" class="shop" :shops="shops"/>
+<!--  商品展示  //当商品为推荐时，展示所有商品    -->
+        <shops
+            width="36%"
+            fontSize="12px"
+            spanSize="12px"
+            aSize="15px"
+            class="shop"
+            :shops="title === '推荐' ? allShops : shops"
+        />
     </div>
   </div>
 

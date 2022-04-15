@@ -6,7 +6,7 @@ const mixin = {
     data(){
        return {
            shops:[], //用于储存符合条件的商品信息
-           title:'', //用于储存点击的导航栏标题
+           title:'推荐', //用于储存点击的导航栏标题
            //定义导航栏标题
            kinds:["推荐","食品","手机","水果","鞋包","男装","百货","女装","电器","医药","电脑","美妆","家纺","运动","车品","玩乐"],
        }
@@ -19,7 +19,7 @@ const mixin = {
     watch:{
         title(newValue){
             //当商品为推荐时，展示所有商品
-            if(newValue === '推荐') return this.shops = this.allShops;
+            // if(newValue === '推荐') return this.shops = this.allShops;
             //根据title值匹配商品数据
             this.shops = this.allShops.filter(val => val.kind === newValue);
         }

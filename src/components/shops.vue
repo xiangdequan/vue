@@ -107,7 +107,7 @@ export default {
 
     span:nth-of-type(2){
       color: green;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     span:last-child{
