@@ -12,6 +12,9 @@ const updatePassword = require("../schema/updatePassword");
 //定义获取用户信息路由
 router.get("/info",handle.info);
 
+//定义修改用户头像路由
+router.post('/updataImg',handle.updateImg);
+
 //定义更改密码路由  使用局部中间件验证
 router.post("/updatePsw",expressJoi(updatePassword),handle.updatePsw);
 

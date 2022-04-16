@@ -26,7 +26,7 @@ exports.register = (req,res)=>{
         //插入数据  简写形式直接传入对象
         db.query(sqlTwo,req.body,(err,results)=>{
             //判断是否失败  响应失败提示
-            if(err) return console.log(err.message);//res.rep("注册失败，请稍后重试")
+            if(err) return res.rep("注册失败，请稍后重试")
             //判断数据是否插入成功  利用results上的属性affectedRows  插入语句时results为一个对象有affectedRows属性 查询时为一个数组
             if(results.affectedRows !== 1) return res.rep("注册失败，请稍后重试");
             //以上都没问题，说明注册成功，响应数据给服务器
@@ -56,7 +56,7 @@ exports.login = (req,res)=>{
             msg:"登陆成功！",
             //通过jwt的sign方法生成token返回客户端  配置项: 第一个是需要加密的用户数据  第二个是jwt密钥  第三个是token的有效期（失效后解析不了）
             //为方便前端处理,加上Bearer字符前缀(前端传给后端token时需要加Bearer前缀)
-            token: "Bearer " + jwt.sign({userName:results[0].userName,name:results[0].info},secretKey,{expiresIn:"1h"})
+            token: "Bearer " + jwt.sign({userName:results[0].userName,name:results[0].id},secretKey,{expiresIn:"1h"})
         });
     })
 }

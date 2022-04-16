@@ -4,15 +4,30 @@ const db = require("../mysql/mysql");
 //info根据用户带来的token信息获取数据库中信息
 exports.info = (req, res)=>{
     //定义sql语句
-    const sql = 'select * from users where userName=?';
+    const sql = 'select userName,userImg,info from users where userName=?';
     //查询信息   通过解析成功后生成的user属性中的数据查询
     db.query(sql,req.user.userName,(err,results)=>{
         //判断是否出错
         if(err) return res.rep("请稍后再试");
         //判断是否找到数据
         if(results.length === 0) return res.rep("未找到相关数据");
-        //找到后响应给客户端
-        res.rep(results,0);
+        //找到后响应给客户端 将用户token内保存的值
+        res.rep(results[0],0);
+    })
+}
+
+//更改用户头像api
+exports.updateImg = (req,res)=>{
+    //定义sql语句
+    const sql = 'UPDATE  users  SET  userImg=?  WHERE  userName = ?';
+    //发送验证
+    db.query(sql,[req.body.userImg,res.body.userName],(err,results)=>{
+        //判断是否出错
+        if(err) return res.rep('服务器错误！请稍后重试');
+        //判断是否修改成功
+        if(results.affectedRows === 0) return res.rep('修改失败!请稍后重试');
+        //到这步就表示修改成功
+        res.rep('修改成功',0);
     })
 }
 

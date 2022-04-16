@@ -6,7 +6,7 @@
     <van-icon name="arrow-left" size="20px" @click="back"/>
 <!--  搜索框  -->
     <van-search
-        v-model="value"
+        v-model.trim="value"
         show-action
         shape="round"
         :autofocus="true"
@@ -20,7 +20,7 @@
     </van-search>
   </div>
 <!-- 导航 -->
-  <div class="orderBy">
+  <div class="orderBy" v-show="show">
     <!--  排序  -->
     <van-dropdown-menu>
       <van-dropdown-item :title="'全部商品'" :overlay="false"/>
@@ -28,14 +28,17 @@
     </van-dropdown-menu>
   </div>
 <!-- 商品展示区 -->
-  <shops class="shopShow"/>
+  <shops class="shopShow" :shops="shops"/>
 </div>
 </template>
 
 <script>
 //导入vant
 import { Search,Icon,DropdownMenu, DropdownItem } from 'vant';
+//导入shops组件
 import Shops from "@/components/shops";
+//导入mapSate
+import {mapState} from "vuex";
 
 export default {
   name: "searchShop",
@@ -48,7 +51,9 @@ export default {
   },
   data(){
     return {
-      value:'',//搜素框值
+      show:false, //用于控制商品排序栏的显示，只有点击搜索才会显示
+      value:'',  //用于储存搜索框内容
+      shops:[],  //用于储存符合条件的商品信息
       orderBy: 'a',//用于存储第二个下拉菜单已选中项的value值
       option1: [ //第一个选项下拉框内容
         { text: '全部商品', value: 0 }
@@ -60,6 +65,13 @@ export default {
       ],
     }
   },
+  computed:{
+    //计算属性vuex中的商品数据
+    ...mapState("allShops",['allShops']),
+    //筛选符合条件的数据
+    // shops(){
+    //
+  },
   methods:{
     //back返回上一页
     back(){
@@ -67,15 +79,19 @@ export default {
     },
     //搜索商品  默认传参value 搜索的内容
     onSearch(){
-      //发送axios请求 获取数据
-      //将数据保存本地
-      //数据渲染到子组件
+      //取反show的值，使商品排序栏显示
+      this.show = true;
+      //根据搜索框的值匹配相应的商品  通过商品描述、类别搜索符合条件的商品
+      this.shops = this.allShops.filter(val => val.font.indexOf(this.value) !== -1  || val.kind.indexOf(this.value) !== -1);
     },
     //组件选项自带 获取选中项数据 默认传参value 被选择项val
-    change(val,e){
-console.log(val,e)
+    change(val){
+      //根据第二个菜单过滤出符合条件的商品  排序 默认按数据库位置排序，可选择升序和降序按价格
+      if(val === 'b') this.shops.sort((a,b)=>{ return b.price - a.price});
+      if(val === 'c') this.shops.sort((a,b)=> { return a.price - b.price});
     }
-  }
+    }
+  // }
 }
 </script>
 

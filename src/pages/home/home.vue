@@ -14,7 +14,7 @@
           </van-grid-item>
         </van-grid>
 <!-- 商品展示区   需要传数据  标签的宽度   //当商品为推荐时，展示所有商品-->
-        <shops :shops="title === '推荐' ? allShops : shops"/>
+        <shops :shops="shops"/>
       </van-pull-refresh>
     </van-tab>
   </van-tabs>

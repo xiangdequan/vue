@@ -1,6 +1,6 @@
 import vueRouter from "vue-router";
-import axios from "axios";
-
+//引入前置路由守卫处理函数
+import isLogin from "@/router/beforeEach";
 //导出router对象
 const router = new vueRouter({
     //mode配置项表示使用哪种方案 history或hash
@@ -69,43 +69,19 @@ const router = new vueRouter({
             path:"/home",
             component: ()=>import("../pages/home/home")
         },
+        //用户信息管理
+        {
+            path:'/userInfo/:userName',
+            component: ()=> import("../pages/mine/userInfo"),
+            meta:{
+                isAuth:true
+            }
+        }
     ]
 })
 
 //全局前置路由守卫  验证token
-router.beforeEach((to,from,next)=>{
-    //判断是否要鉴权
-    if(to.meta.isAuth){
-        //判断用户有没有登录，没有登录先去登录
-            //取出本地存储token
-            let token = window.localStorage.getItem("token");
-            //判断token是否存在
-            if(token !== ''){
-                //如果取到了token,判断有没有过期
-                axios.get(
-                    "/user/info",
-                    {
-                        //设置请求头，向服务器验证token
-                        headers:{
-                            "Authorization":token
-                        }
-                    }
-                ).then(res=>{
-                    //根据返回值判断token是否有效
-                    if(!res.data.code){
-                        //有效就放行
-                        next();
-                    }else{
-                        //无效去登录
-                        router.push('/login')
-                    }
-                })
-        }
-    }else{
-        //不需要鉴权放行
-        next();
-    }
-})
+router.beforeEach(isLogin)
 
 //导出router
 export default router;

@@ -14,10 +14,12 @@ const userName = joi.string().alphanum().min(6).max(12).required();
 const password = joi.string().alphanum().min(6).max(12).required();
 //验证昵称
 const info = joi.string().max(6).min(3).required();
+//验证用户头像
+const userImg = joi.string().required();
 
 //导出定义的规则,定义的规则可以对params、query、body的参数进行验证，根据自己需求选择，如果其他项不需要可以不要，规则配置项必须为对象
 module.exports = {
     body:{
-        userName,password,info
+        userName,password,info,userImg
     }
 }

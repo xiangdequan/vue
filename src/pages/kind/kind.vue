@@ -20,7 +20,7 @@
             spanSize="12px"
             aSize="15px"
             class="shop"
-            :shops="title === '推荐' ? allShops : shops"
+            :shops="shops"
         />
     </div>
   </div>
@@ -100,6 +100,7 @@ export default {
 
         img{
           width: 100%;
+          border-radius: 10px;
         }
       }
 

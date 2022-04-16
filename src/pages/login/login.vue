@@ -8,6 +8,7 @@
     />
   <div class="logo"></div>
   <van-form>
+    <van-uploader :after-read="afterRead" v-show="!show" v-model="fileList" max-count="1" image-fit="cover"/>
     <van-field
         v-model="userName"
         name="userName"
@@ -43,7 +44,7 @@
 
 <script>
 //导入vant组件
-import { Form,Field,Button,Toast,Icon,NavBar } from 'vant';
+import { Form,Field,Button,Toast,Icon,NavBar,Uploader } from 'vant';
 import axios from "axios";
 
 export default {
@@ -54,7 +55,8 @@ export default {
     [Button.name]:Button,
     [Toast.name]:Toast,
     [Icon.name]:Icon,
-    [NavBar.name]:NavBar
+    [NavBar.name]:NavBar,
+    [Uploader.name]:Uploader
   },
   data() {
     return {
@@ -62,6 +64,8 @@ export default {
       password: '', //密码
       info:'',//昵称
       show: true,  //控制登录/注册
+      fileList: [], //上传的文件
+      userImg:'',//上传的图片  base64格式  没上传为空
     };
   },
   methods: {
@@ -72,10 +76,17 @@ export default {
       this.password = '';
       this.show = !this.show; //show值取反
     },
+    //头像上传成功处理回调函数  file为默认对象，表示上传的文件  图片文件已自动转换成base64格式通过，file.content属性
+    afterRead(file){
+      //上传成功后将图片base64格式编码保存到userImg
+      this.userImg = file.content;
+    },
+    //登录处理函数
     //登录请求函数
     loginORregister(e) {
       let userName = this.userName;
       let password = this.password;
+      let userImg = this.userImg;
       let info = this.info;
       //储存点击按钮的文本
       let text = e.target.innerText;
@@ -83,21 +94,28 @@ export default {
       let url = '';
       //定义提示语前部分
       let tip = '';
+      //定义data储存需要发送的数据
+      let data = {};
       //当收集的数据为空时，终止函数运行
       if (userName === '' || userName.length < 5 || userName.length > 12) return Toast("用户名长度6~12位");
       //验证
       if (password === '' || password.length < 5 || password.length > 12) return Toast("密码长度6~12位");
-      if(text === '注册')  if (info.length > 6 || info.length < 3) return Toast("昵称长度3~6");//只有注册才需要验证昵称
+      //只有注册才需要验证昵称
+      if(text === '注册')  if (info.length > 6 || info.length < 3) return Toast("昵称长度3~6");
+      //判断是否上传图片
+      if(text === '注册')  if(userImg.length === 0) return Toast('请选择用户头像');
       //根据点击的按钮实现相关功能
       if(text === "登录"){
         tip = "登录";
         url = 'api/login';
+        data = {userName,password};
       }else{
         tip = "注册";
-        url = 'api/register'
+        url = 'api/register';
+        data = {userName,password,info,userImg};
       }
       //发送请求验证登录
-      axios.post(url,{userName,password,info}).then(res=>{
+      axios.post(url,data).then(res=>{
         //根据返回的数据判断是否登录成功
         if(!res.data.code){
           //当登录、注册时，成功后储存token
@@ -139,7 +157,7 @@ export default {
   .logo{
     width: 289.5px;
     height: 211px;
-    margin: 8% auto 0;
+    margin: 6% auto 0;
     background: url("../../assets/sg1.png");
     background-size: 100%;
   }
@@ -149,10 +167,20 @@ export default {
     margin: 0 5%;
     position: relative;
     left: 0;
-    top: 5%;
+    top: 1%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    //头像上传
+    .van-uploader{
+      margin-bottom: 2%;
+    }
+
     //表单提交按钮div样式
     .submit{
       margin-top: 16px;
+      width: 100%;
       //提交div内p标签样式
       p{
         height: 12px;

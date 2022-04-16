@@ -9,7 +9,13 @@
 import Bar from "../components/bar";
 export default {
   name: "pageView",
-  components: {Bar}
+  components: {
+    Bar,
+  },
+  /*mounted() {
+    //在绑定时，发送验证token,获取内容，并保存到vuex的userInfo中
+    this.$store.dispatch('userInfo/getUserIfo');
+  }*/
 }
 </script>
 
