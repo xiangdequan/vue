@@ -17,10 +17,11 @@
     <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow('注销账号')" />
   </van-cell-group>
   <van-action-sheet v-model="show" :title="title">
-      <updataPassword/>
-      <div style="margin: 16px;">
-        <van-button round block type="info" >提交</van-button>
-      </div>
+    <updateUserImg v-show="title === '用户头像修改'"/>
+    <updatePassword v-show="title === '用户密码修改'"/>
+    <updateName v-show="title === '用户昵称修改'"/>
+    <updateAll v-show="title === '修改所有信息'"/>
+    <deleteUser v-show="title === '注销账号'"/>
   </van-action-sheet>
 </div>
 </template>
@@ -28,12 +29,20 @@
 <script>
 //引入vant
 import {NavBar,Toast,Dialog,Cell,CellGroup,ActionSheet,Form,Field,Button} from 'vant'
-import updataPassword from "@/pages/mine/updataPassword";
+import updatePassword from "@/pages/mine/updatePassword";
+import updateUserImg from "@/pages/mine/updateUserImg";
+import updateName from "@/pages/mine/updateName";
+import updateAll from "@/pages/mine/updateAll";
+import deleteUser from "@/pages/mine/deleteUser";
 
 export default {
   name: "userInfo",
   components:{
-    updataPassword,
+    updatePassword,
+    updateUserImg,
+    updateName,
+    updateAll,
+    deleteUser,
     [NavBar.name]:NavBar,
     [Toast.name]:Toast,
     [Cell.name]:Cell,
@@ -47,7 +56,7 @@ export default {
     return {
       activeName:"0",//点击的标签索引
       show:false,  //是否显示
-      title: '' //用户储存操作类型
+      title: '' , //用户储存操作类型
     }
   },
   methods:{
@@ -68,10 +77,10 @@ export default {
             //清除本地储存的token
             window.localStorage.removeItem('token');
             //提示
-            Toast('注销登录成功!');
+            Toast('注销登录成功');
             //跳转登录页
             this.$router.replace('/login');
-          })
+          }).catch(()=>{})
     },
     //是否显示  传参操作类型
     isShow(title){
@@ -88,9 +97,10 @@ export default {
 #userIfo{
   height: 100%;
 
+  //弹出层高度
   .van-action-sheet{
     padding: 4% 2% 3%;
-    height: 90%;
+    //height: 90%;
   }
 }
 </style>

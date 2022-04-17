@@ -3,7 +3,7 @@
 <!--顶部搜索栏-->
 <search />
 <!--  顶部导航栏-->
-  <van-tabs title-active-color="red" @click="searchByTitle" swipeable animated>
+  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated>
     <van-tab v-for="(val,index) in kinds" :title="val" :key="index">
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" style="min-height: 100%">
 <!--   商品导航     -->
