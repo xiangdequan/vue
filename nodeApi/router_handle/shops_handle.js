@@ -34,3 +34,18 @@ exports.getShops = (req,res)=>{
         })
     })
 }
+
+//获取点击项商品信息
+exports.getShopInfo = (req,res)=>{
+    //定义sql
+    const sql = 'select * from shops where id = ?';
+    //查询数据
+    db.query(sql,req.body.id,(err,results)=>{
+        //判断是否出错
+        if(err) return res.rep('获取商品信息失败');
+        //判断是否找到商品
+        if(results.length === 0) return res.rep('未找到相关商品');
+        //到这步就成功了 返回数据给客户端
+        res.send({code:0,results});
+    })
+}

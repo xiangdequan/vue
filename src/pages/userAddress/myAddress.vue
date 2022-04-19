@@ -43,35 +43,17 @@ export default {
       //'新增地址'
       this.$router.push('/addAddress')
     },
-    onEdit(item, index) {
+    onEdit(item) {
       //'编辑地址:' + index
       this.$router.push({path:'/addAddress',query:{addressInfo:item}});
-      console.log(item,index)
     },
     //组件自带  选中切换事件，默认传参，item:当前选中项的地址对象,index:当前选中项索引
     select(){
       //切换选中地址触发  更改选中状态
-      /*axios.post(
-          'user/updateDefault',
-          {id: item.id},
-          {
-            headers:{
-              'Authorization': window.localStorage.getItem('token')
-            }
-          }
-      ).then(res=>{
-        if(!res.data.code) {
-          //遍历每一项数据，将默认选中改为false
-          this.list.map(val=>val.isDefault=false);
-          //将当前项选为默认
-          item.isDefault = true;
-        }else{
-          Toast('切换失败');  //失败提示
-        }
-      }).catch(()=>{Toast('服务器繁忙')});*/
+
     }
   },
-  beforeMount() {
+  mounted() {
     //将数据库的地址数据保存到list
     axios.get(
         'user/myAddress',
@@ -81,7 +63,16 @@ export default {
           }
         }
     ).then(res=>{
-      if (!res.data.code) return this.list = res.data.results; //返回的数据交给list
+      if (!res.data.code){
+        this.list = res.data.results; //返回的数据交给list
+        this.list.map(val=>{
+          if(val.isDefault) {
+            val.isDefault = true;
+          }else{
+            val.isDefault = false;
+          }
+        })
+      }
       return Toast(res.data.msg); //失败提示
     }).catch(()=>{Toast('服务器繁忙')})
   }

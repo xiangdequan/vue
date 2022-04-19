@@ -34,7 +34,7 @@ exports.register = (req,res)=>{
                 code:0,
                 msg:"注册成功",
                 //将token返回给客户端
-                token: "Bearer " + jwt.sign({userName:req.body.userName,name:req.body.info},secretKey,{expiresIn:"1h"})
+                token: "Bearer " + jwt.sign({userName:req.body.userName,name:req.body.info},secretKey,{expiresIn:"12h"})
             });
         })
     })

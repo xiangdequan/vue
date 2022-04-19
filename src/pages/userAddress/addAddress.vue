@@ -35,6 +35,7 @@ export default {
     return {
       areaList, //省市地址
       title:'', // 标题
+      times:0, //用于保存点击次数，每次点击设置默认收货地址次数都加一
       addressInfo: {},//表单默认值,用于编辑时填充
       isDefault:false, //用于判断是否设为默认地址
       isShowDelete: false,//用于判断是否显示delete按钮
@@ -43,34 +44,18 @@ export default {
   methods:{
     //是否选中为默认地址  默认传参val值为boolean类型
     changeDefault(val){
-      this.isDefault = val;
+      this.isDefault = val; //将设置的布尔结果赋值给this,isDefault
+      this.times += 1; //次数自增
     },
 
-    //提交
+    //异步提交  先设为默认地址，再
     onSave(content) {
-        //通过传参判断是否为修改地址
+        //当状态为修改、并且没有使用过设置默认地址滑块时，将初始数据的isDefault值赋给this.isDefault
+        if(this.times === 0 && this.isShowDelete) this.isDefault = this.addressInfo.isDefault;
         //获取本地存储token
         let token = window.localStorage.getItem('token');
-        //当需要设为默认地址时，向接口发送请求
-        // if(this.isDefault) this.updateDefault(token);
         //添加/修改数据
         this.addAddress(content,token);
-    },
-
-    updateDefault(token){
-      //更改默认地址
-     axios.post(
-          'user/updateDefault',
-         {},
-          {
-            headers:{
-              'Authorization': token
-            }
-          }
-      ).then(res=>{
-        if(!res.data.code) return Toast('已切换'); //成功提示
-        return Toast(res.data.msg);  //失败提示
-      }).catch(()=>{Toast('服务器繁忙')});
     },
 
     addAddress(content,token){

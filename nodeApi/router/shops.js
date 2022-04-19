@@ -11,4 +11,7 @@ router.post('/addShops',handle.addShops);
 //获取商品信息api
 router.get('/getShops',handle.getShops);
 
+//获取点击项商品信息
+router.post('/getShopInfo',handle.getShopInfo);
+
 module.exports = router;

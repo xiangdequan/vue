@@ -60,9 +60,9 @@ export default {
   methods:{
     //点击跳转  传参相应商品id
     getMore(id){
-      console.log(id);
-      //路由跳转携带参数  id
-    }
+      //跳转携带参数---当前商品项id
+      this.$router.push(`/shopInfo/${id}`);
+    },
   }
 }
 </script>

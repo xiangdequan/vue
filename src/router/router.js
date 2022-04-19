@@ -64,10 +64,10 @@ const router = new vueRouter({
             path:"/search",
             component: ()=>import("../pages/search/searchShop")
         },
-        //首页路由
+        //商品详情页
         {
-            path:"/home",
-            component: ()=>import("../pages/home/home")
+          path:'/shopInfo/:id',
+          component:()=> import('../pages/shopInfo/shopInfo')
         },
         //用户信息管理
         {
