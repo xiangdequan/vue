@@ -29,11 +29,11 @@
 <script>
 //引入vant
 import {NavBar,Toast,Dialog,Cell,CellGroup,ActionSheet,Form,Field,Button} from 'vant'
-import updatePassword from "@/pages/mine/updatePassword";
-import updateUserImg from "@/pages/mine/updateUserImg";
-import updateName from "@/pages/mine/updateName";
-import updateAll from "@/pages/mine/updateAll";
-import deleteUser from "@/pages/mine/deleteUser";
+import updatePassword from "@/pages/userInfo/updateInfo/updatePassword";
+import updateUserImg from "@/pages/userInfo/updateInfo/updateUserImg";
+import updateName from "@/pages/userInfo/updateInfo/updateName";
+import updateAll from "@/pages/userInfo/updateInfo/updateAll";
+import deleteUser from "@/pages/userInfo/updateInfo/deleteUser";
 
 export default {
   name: "userInfo",

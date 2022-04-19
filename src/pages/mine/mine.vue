@@ -30,17 +30,27 @@
   <van-collapse v-model="activeName" accordion>
     <!--  地址管理  -->
     <van-collapse-item title="地址管理" icon="location-o" name="1" size="large">
-      <span><van-icon name="browsing-history-o" />查看收货地址</span>
-      <span><van-icon name="add-o" />添加收货地址</span>
+      <span @click="goAddress" >
+        <van-icon name="browsing-history-o"/>查看收货地址
+      </span>
+      <span @click="goAddress">
+        <van-icon name="add-o" />添加收货地址
+      </span>
     </van-collapse-item>
     <!--  收藏管理  -->
     <van-collapse-item title="收藏管理" icon="goods-collect-o" name="2" size="large">
-      <span><van-icon name="eye-o" />查看收藏</span>
+      <span @click="goAddress">
+        <van-icon name="eye-o" />查看收藏
+      </span>
     </van-collapse-item>
   <!--  联系我们  -->
     <van-collapse-item icon="service-o" title="客户服务" name="3" size="large">
-      <span><van-icon name="phone-o" />官方热线</span>
-      <span><van-icon name="comment-circle-o" />在线客服</span>
+      <span @click="goAddress">
+        <van-icon name="phone-o" />官方热线
+      </span>
+      <span @click="goAddress">
+        <van-icon name="comment-circle-o" />在线客服
+      </span>
     </van-collapse-item>
   </van-collapse>
 </div>
@@ -68,10 +78,36 @@ export default {
     }
   },
   methods:{
+    //点击跳转页面
+    goAddress(e){
+      //保存点击项文本内容
+      let title = e.target.innerText;
+      //保存路由对象
+      let router = this.$router;
+      //根据title匹配相应跳转
+      switch (title){
+        case '添加收货地址' :
+          router.push('/addAddress');
+          break;
+        case '查看收货地址':
+          router.push('/myAddress');
+          break;
+        case "查看收藏" :
+          router.push('/myCollect');
+          break;
+        case '官方热线':
+          alert("客服电话:111111");
+          break;
+        case "在线客服" :
+          alert("开发中");
+          break;
+        default: alert('错误!');
+      }
+    },
     //点击设置跳转修改用户信息页面
     updataInfo(){
-      //跳转页面，并携带parmas参数  userName
-      this.$router.push(`/userInfo/${this.userInfo.userName}`);
+      //跳转页面
+      this.$router.push(`/userInfo`);
     }
   },
   //绑定前获取用户信息

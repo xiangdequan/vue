@@ -10,6 +10,8 @@ const userRouter = require("./router/user");
 const userInfo = require("./router/userInfo");
 //导入添加/获取商品api
 const shops = require("./router/shops");
+//导入用户地址相关路由
+const userAddress = require('./router/userAddress');
 //导入验证插件
 const joi = require("joi");
 //实例化express对象
@@ -51,10 +53,12 @@ app.use("/api",userRouter);
 //注册用户信息路由，添加user前缀  功能:获取用户信息、修改密码
 app.use("/user",userInfo);
 //添加/获取商品
-app.use('/api',shops)
+app.use('/api',shops);
+//添加、修改、获取收货地址api，需要验证token
+app.use('/user',userAddress);
 
 //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
-app.use((err,req,res)=>{
+app.use((err,req,res,next)=>{
     //通过错误对象的名称来判断是否为token解析失败产生的错误，如果是则返回错误信息
     if(err.name === "UnauthorizedError") return res.send({code:2,msg:"无效的token!"});
     //全局错误级别中间件中，捕获验证失败的错误，并把验证失败的结果响应给客户端：
@@ -62,5 +66,6 @@ app.use((err,req,res)=>{
     //处理其他错误
     console.log(err.message)
     res.rep("服务器错误,请稍后再试");
+    next();
 })
 

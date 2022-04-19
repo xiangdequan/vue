@@ -9,7 +9,7 @@ shops:展示的商品(数组)
 <!-- 商品展示组件 -->
 <div id="shops">
 <!--  只有未找到相关结果才显示-->
-  <van-empty image="search" description="未找到相关商品" v-show="shops.length <= 0"/>
+  <van-empty image="search" description="未找到相关商品" v-if="shops.length <= 0"/>
   <!-- 商品项 根据父组件传过来的数据动态渲染 商品图片、商品描述 通过id获取商品的详情页-->
   <div class="shops-item" v-for="item in shops" :key="item.id" @click="getMore(item.id)">
     <!--  :src="item.url" 374px -->

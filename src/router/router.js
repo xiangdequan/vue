@@ -71,11 +71,29 @@ const router = new vueRouter({
         },
         //用户信息管理
         {
-            path:'/userInfo/:userName',
-            component: ()=> import("../pages/mine/userInfo"),
+            path:'/userInfo',
+            component: ()=> import("../pages/userInfo/userInfo"),
             meta:{
                 isAuth:true
             }
+        },
+        //添加收货地址
+        {
+            path:'/addAddress',
+            component: ()=> import('../pages/userAddress/addAddress'),
+            meta:{
+                isAuth:true
+            },
+            props:true
+        },
+        //查看收货地址
+        {
+            path:'/myAddress',
+            component: ()=> import('../pages/userAddress/myAddress'),
+            meta:{
+                isAuth:true
+            }
+
         }
     ]
 })
