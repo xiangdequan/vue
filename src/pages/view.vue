@@ -1,6 +1,6 @@
 <template>
 <div id="pageView">
-  <router-view></router-view>
+    <router-view></router-view>
   <bar/>
 </div>
 </template>
@@ -12,10 +12,10 @@ export default {
   components: {
     Bar,
   },
-  /*mounted() {
-    //在绑定时，发送验证token,获取内容，并保存到vuex的userInfo中
-    this.$store.dispatch('userInfo/getUserIfo');
-  }*/
+  mounted() {
+    //在绑定时，触发购物车模块方法，获取数据库信息
+    this.$store.dispatch('buyCar/getBuyCarShop');
+  }
 }
 </script>
 

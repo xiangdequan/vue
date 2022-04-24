@@ -62,6 +62,7 @@ export default {
 
   //定义混合隐藏滚动条
   .scrollHide(){
+    overflow-y: scroll;
     //隐藏滚动条
     &::-webkit-scrollbar{
       width: 0;
@@ -81,6 +82,7 @@ export default {
 
     //侧边导航
     .van-sidebar{
+      height: 95%;
       .scrollHide(); //混合，隐藏滚动条
     }
 
@@ -106,7 +108,7 @@ export default {
 
       //shop样式
       .shop{
-        margin-bottom: 14%;
+        margin-bottom: 11.5%;
       }
 
     }

@@ -71,7 +71,7 @@ export default {
 
   //顶部导航栏样式
   .van-tabs{
-    height: 86%;
+    height: 87%;
     width: 100%;
     position: relative;
     top: 6%;

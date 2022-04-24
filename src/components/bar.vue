@@ -3,7 +3,7 @@
   <van-tabbar v-model="active">
     <van-tabbar-item icon="wap-home-o" to="home" replace>首页</van-tabbar-item>
     <van-tabbar-item icon="bars" to="kind" replace dot>分类</van-tabbar-item>
-    <van-tabbar-item icon="shopping-cart-o" badge="5" to="buy"  replace>购物车</van-tabbar-item>
+    <van-tabbar-item icon="shopping-cart-o" :badge="shopsNum" to="buy"  replace>购物车</van-tabbar-item>
     <van-tabbar-item icon="user-circle-o" badge="20" to="mine" replace>我的</van-tabbar-item>
   </van-tabbar>
 </template>
@@ -11,6 +11,7 @@
 <script>
 //引入vant
 import {Tabbar,TabbarItem} from "vant";
+import {mapState} from "vuex";
 
 export default {
   name: "bar",
@@ -23,6 +24,9 @@ export default {
       active:0, //选中项导航栏索引
       routeUrl:this.$route.name //将路由的名称保存在变量，方便监测
     }
+  },
+  computed:{
+    ...mapState('buyCar',['shopsNum']) //获取购物车数据条数，更新角标
   },
   //监视route的name属性变化,匹配active值  实现导航栏精准定位
   watch:{
@@ -62,9 +66,9 @@ export default {
 <style scoped>
 /*底部导航栏样式*/
 .van-tabbar{
-  height: 8%;
+  height: 7%;
   position: fixed;
-  top: 92%;
+  top: 93%;
   width: 100%;
 }
 </style>

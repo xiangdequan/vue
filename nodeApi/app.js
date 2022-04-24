@@ -12,6 +12,9 @@ const userInfo = require("./router/userInfo");
 const shops = require("./router/shops");
 //导入用户地址相关路由
 const userAddress = require('./router/userAddress');
+//导入添加购物车相关路由
+const buyCar = require('./router/buyCar');
+
 //导入验证插件
 const joi = require("joi");
 //实例化express对象
@@ -56,6 +59,8 @@ app.use("/user",userInfo);
 app.use('/api',shops);
 //添加、修改、获取收货地址api，需要验证token
 app.use('/user',userAddress);
+//购物车相关操作路由
+app.use('/user',buyCar);
 
 //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
 app.use((err,req,res,next)=>{
