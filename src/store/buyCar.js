@@ -25,10 +25,22 @@ export default {
         GetBuyCarShop(state,val){
             state.buyCarShop = val; //修改购物车商品数据
             state.shopsNum = val.length;//修改购物车商品数据条数
+        },
+        //获取已经选中的购物车商品
+        GetCheckedShops(state,val){
+            //修改数据
+            state.checkedShops = val;
+        },
+        //获取已选中商品总价
+        GetTotalPrice(state,val){
+            //修改数据
+            state.totalPrice = val;
         }
     },
     state:{
         buyCarShop:[],//用于保存所有购物车数据
-        shopsNum:0 //用于保存购物车数据条数
+        shopsNum:0, //用于保存购物车数据条数
+        checkedShops:[],//用于保存已选中的购物车商品
+        totalPrice:0,//用于保存已选中商品总价
     }
 }

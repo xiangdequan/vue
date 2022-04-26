@@ -23,7 +23,7 @@
 <!-- 底部菜单 -->
   <van-goods-action>
     <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
-    <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopsNum" to="/view/buy"/>
+    <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopsNum | isShowBadge" :to="{name:'buyCar'}"/>
     <van-goods-action-icon icon="star" text="已收藏" color="#ff5000" />
     <van-goods-action-button type="warning" text="加入购物车" @click="addBuyCar"/>
     <van-goods-action-button type="danger" text="立即购买" @click="buyShop"/>
@@ -34,7 +34,7 @@
 <script>
 import {Icon, Tag, GoodsAction, GoodsActionIcon, GoodsActionButton, Toast} from 'vant'
 import axios from "axios";
-import {mapState} from "vuex";
+import isShowBadge from "@/mixin/isShowBadge"; //混合，内置过滤器、计算属性，用于处理购物车角标
 
 export default {
   name: "shopInfo",
@@ -51,9 +51,7 @@ export default {
       shopInfo:{},//用于储存点击项商品信息
     }
   },
-  computed:{
-    ...mapState('buyCar',['shopsNum'])//用于获取购物车商品条数，从而更新角标
-  },
+  mixins:[isShowBadge],//混合，内置过滤器、计算属性（获取购物车商品条数），当shopsNum购物车为空时，传值''，即不显示角标
   methods:{
     back(){
       //返回上一页
@@ -79,16 +77,23 @@ export default {
             }
           }
       ).then(res=>{
-        if(!res.data.code){
-          this.$store.dispatch('buyCar/getBuyCarShop');//触发vuex中购物车信息模块数据更新
-          Toast('已加入购物车');//成功提示
-        } else{
-          Toast(res.data.msg);//失败提示
-        }
+          this.schema(res.data);//验证请求结果
       }).catch(()=>Toast('服务器繁忙'))
     },
     buyShop(){
 
+    },
+    //验证加入购物车请求结果
+    schema(data){
+      if(!data.code){ //成功情况
+        this.$store.dispatch('buyCar/getBuyCarShop');//触发vuex中购物车信息模块数据更新
+        Toast('已加入购物车');//成功提示
+      } else if(data.code === 2){ //失败情况：token失效
+        Toast(data.msg);//失败提示
+        this.$router.push('/login');//跳转登录页
+      }else{ //失败情况
+        Toast(data.msg)//失败提示
+      }
     }
   },
   beforeMount() {
@@ -99,7 +104,7 @@ export default {
     ).then(res=>{
       //判断是否成功获取
       if(!res.data.code) return this.shopInfo = res.data.results[0];//将获取的值存到shopInfo
-    }).catch(()=>{alert('服务器繁忙')})
+    }).catch(()=>{Toast('服务器繁忙')})
   }
 }
 </script>

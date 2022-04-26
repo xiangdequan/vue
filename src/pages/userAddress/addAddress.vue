@@ -115,7 +115,7 @@ export default {
   },
   mounted() {
     //如果addressInfo的值不为undefined，就将值赋给this.addressInfo,表示修改,为undefined表示新增
-    let addressInfo = this.$route.query.addressInfo;
+    let addressInfo = this.$route.params.addressInfo;
     this.addressInfo = addressInfo;
     //根据默认填充的addressInfo值判断当前是修改收货地址还是添加收货地址
     //添加收货地址: 隐藏修改按钮，修改标题

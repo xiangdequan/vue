@@ -24,9 +24,9 @@ export default [
             },
             //购物车路由
             {
-                path:"buy",
-                name:"buy",
-                component: ()=>import("../pages/buy/buy"),
+                path:"buyCar",
+                name:"buyCar",
+                component: ()=>import("../pages/buy/buyCar"),
                 meta:{
                     isAuth:true
                 }

@@ -21,9 +21,10 @@ Vue.use(vueRouter,axios,less,lessLoader);
 //设置axios默认基础路径
 //10.20.25.15
 //192.168.43.83
-// axios.defaults.baseURL = "http://192.168.43.83/";
-axios.defaults.baseURL = "http://10.20.25.15/";
-// axios.defaults.baseURL = "http://10.20.140.50/";
+axios.defaults.baseURL = "http://192.168.43.83/";//热点ip
+// axios.defaults.baseURL = "http://10.20.25.15/"; //宿舍ip
+// axios.defaults.baseURL = "http://127.0.0.1/";  //本地ip
+// axios.defaults.baseURL = "http://10.20.140.50/";  //教室ip
 
 //阻止vue产生生产提示
 Vue.config.productionTip = false

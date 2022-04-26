@@ -45,12 +45,15 @@ export default {
     },
     onEdit(item) {
       //'编辑地址:' + index
-      this.$router.push({path:'/addAddress',query:{addressInfo:item}});
+      this.$router.push({name:'addAddress',params:{addressInfo:item}});
     },
     //组件自带  选中切换事件，默认传参，item:当前选中项的地址对象,index:当前选中项索引
-    select(){
-      //切换选中地址触发  更改选中状态
-
+    select(item){
+      //切换选中地址触发  更改选中状态  根据路由传参执行操作，如果该值为未定义就不执行
+      if(this.$route.params.type){
+        //跳转商品结算页面，并将点击的该项地址传过去
+        this.$router.replace({name:'submitOrders',params:{address:item}})
+      }
     }
   },
   mounted() {
@@ -66,6 +69,7 @@ export default {
       if (!res.data.code){
         this.list = res.data.results; //返回的数据交给list
         this.list.map(val=>{
+          //遍历每一项，当地址为默认选中时，将isDefault属性改为true
           if(val.isDefault) {
             val.isDefault = true;
           }else{

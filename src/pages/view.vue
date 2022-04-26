@@ -1,6 +1,8 @@
 <template>
 <div id="pageView">
+  <keep-alive include="buy">
     <router-view></router-view>
+  </keep-alive>
   <bar/>
 </div>
 </template>
