@@ -70,18 +70,19 @@ export default {
           price:this.shopInfo.price,
           shopId:this.shopInfo.id,
           promise:this.shopInfo.promise
-          },
-          {
-            headers:{
-              'Authorization':window.localStorage.getItem('token')
-            }
           }
       ).then(res=>{
           this.schema(res.data);//验证请求结果
       }).catch(()=>Toast('服务器繁忙'))
     },
     buyShop(){
-
+      //因为当前的商品数据没有shopId这个属性，这个属性和当前的id值是一样的，所以新增一个
+      //当前也没有num值，新增一个，默认为1
+      let shops = [{num:1,shopId:this.shopInfo.id,...this.shopInfo}];
+      //当前商品数据包含了kind这个属性但是在订单提交页不需要这个属性，所以删除
+      delete shops[0].kind;
+        //跳转结算页  并携带当前商品参数  整合好的参数
+      this.$router.push({name:'submitOrders',params:{shops}});
     },
     //验证加入购物车请求结果
     schema(data){

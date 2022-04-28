@@ -1,5 +1,6 @@
 //购物车数据
-import axios from "axios";
+//导入axios配置对象
+import axios from '../uitls/axios';
 import {Toast} from "vant";
 
 export default {
@@ -10,11 +11,6 @@ export default {
             //获取购物车商品
             axios.get(
                 'user/selectShops',
-                {
-                    headers:{
-                        'Authorization':window.localStorage.getItem('token')
-                    }
-                }
             ).then(res=>{
                 if(!res.data.code) return context.commit('GetBuyCarShop',res.data.results); //请求成功后，将返回的数据存在本地变量
                 Toast(res.data.msg); //失败了就提示

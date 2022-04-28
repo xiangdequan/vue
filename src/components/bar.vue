@@ -4,7 +4,7 @@
     <van-tabbar-item icon="wap-home-o" to="home" replace>首页</van-tabbar-item>
     <van-tabbar-item icon="bars" to="kind" replace dot>分类</van-tabbar-item>
     <van-tabbar-item icon="shopping-cart-o" :badge="shopsNum | isShowBadge" to="buyCar"  replace>购物车</van-tabbar-item>
-    <van-tabbar-item icon="user-circle-o" badge="20" to="mine" replace>我的</van-tabbar-item>
+    <van-tabbar-item icon="user-circle-o" :badge="mineBadge" to="mine" replace>我的</van-tabbar-item>
   </van-tabbar>
 </template>
 
@@ -13,6 +13,7 @@
 import {Tabbar,TabbarItem} from "vant";
 //引入混合 内置过滤器、计算属性，用于处理购物车角标
 import isShowBadge from "@/mixin/isShowBadge";
+import {mapState} from "vuex";
 
 export default {
   name: "bar",
@@ -24,6 +25,13 @@ export default {
     return {
       active:0, //选中项导航栏索引
       routeUrl:this.$route.name //将路由的名称保存在变量，方便监测
+    }
+  },
+  computed:{
+    ...mapState('orders',['orders']),//获取所有订单数量
+    mineBadge(){ //我的-导航角标
+      let num = this.orders.length;
+      return num ? num : '';
     }
   },
   mixins:[isShowBadge],//混合，内置过滤器、计算属性（获取购物车商品条数），当shopsNum购物车为空时，传值''，即不显示角标
@@ -44,7 +52,7 @@ export default {
         case 'kind':
           this.active = 1;
           break;
-        case 'buy':
+        case 'buyCar':
           this.active = 2;
           break;
         case 'mine':

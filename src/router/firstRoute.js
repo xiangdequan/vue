@@ -49,5 +49,17 @@ export default [
         name: 'submitOrders',
         component: ()=> import('@/pages/buy/submitOrders'),
         props: true
+    },
+    //我的订单
+    {
+        path: '/myOrders',
+        name:'myOrders',
+        component: ()=> import('@/pages/orders/myOrders'),
+        props: true
+    },
+    //输入密码
+    {
+        path: '/inputPassword',
+        component: ()=> import('@/pages/buy/inputPassword')
     }
 ]

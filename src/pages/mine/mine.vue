@@ -12,14 +12,14 @@
     <!--  设置图标  -->
     <van-icon name="setting-o" size="28px" @click="updataInfo"/>
   </div>
-<!-- 订单管理选项 :border="false"-->
+<!-- 订单管理选项 :border="false"  点击跳转订单页面，带参数当前点击的文本-->
   <div class="orders">
-    <p>订单管理<span>查看全部 ></span></p>
+    <p>订单管理<span><router-link :to="{name:'myOrders',params:{type:'全部',index:0}}">查看全部 ></router-link></span></p>
     <van-grid :column-num="4" >
-      <van-grid-item icon="pending-payment" text="待付款" badge="2" to=""/>
-      <van-grid-item icon="clock-o" text="待发货" badge="0" to=""/>
-      <van-grid-item icon="logistics" text="待收货" badge="5" to=""/>
-      <van-grid-item icon="good-job-o" text="待评价" badge="12" to=""/>
+      <van-grid-item icon="pending-payment" text="待支付" :badge="beforePay" :to="{name:'myOrders',params:{type:'待付款',index:1}}"/>
+      <van-grid-item icon="clock-o" text="待发货" :badge="beforeExpress" :to="{name:'myOrders',params:{type:'待发货',index:2}}"/>
+      <van-grid-item icon="logistics" text="待收货" :badge="beforeGet" :to="{name:'myOrders',params:{type:'待收货',index:3}}"/>
+      <van-grid-item icon="good-job-o" text="待评价" :badge="beforeJudge" :to="{name:'myOrders',params:{type:'待评价',index:4}}"/>
     </van-grid>
   </div>
 <!-- 闪购钱包 -->
@@ -59,7 +59,9 @@
 <script>
 //导入cant
 import { Icon,Grid,GridItem,Collapse, CollapseItem } from 'vant';
-import axios from "axios";
+//导入axios配置对象
+import axios from '../../uitls/axios';
+import {mapState} from "vuex";
 
 export default {
   name: "mine",
@@ -73,8 +75,27 @@ export default {
   data(){
     return {
       activeName:'0',//点击的标题名称
-      badge:0, //右上角徽标
-      userInfo:{}//用户信息
+      userInfo:{},//用户信息
+    }
+  },
+  computed:{
+    ...mapState('orders',['orders']),//获取vuex订单板块所有订单
+    //角标处理，从获取的所有订单中过滤出符合条件的订单，这些订单的条数就是角标显示的数字，但是当过滤出来的条数为0，就赋值为空字符串，即不显示角标
+    beforePay(){//待付款角标
+      let num = this.orders.filter(val=>val.orderKind === '待支付').length;
+      return num ? num : '';
+    },
+    beforeExpress(){//待发货角标
+      let num = this.orders.filter(val=>val.orderKind === '待发货').length;
+      return num ? num : '';
+    },
+    beforeGet(){//待收货角标
+      let num = this.orders.filter(val=>val.orderKind === '待收货').length;
+      return num ? num : '';
+    },
+    beforeJudge(){//待评价角标
+      let num = this.orders.filter(val=>val.orderKind === '待评价').length;
+      return num ? num : '';
     }
   },
   methods:{
@@ -112,24 +133,17 @@ export default {
   },
   //绑定前获取用户信息
   beforeMount() {
-    //获取本地储存中的token
-    let token = window.localStorage.getItem('token');
     //发送请求验证token
     axios.get(
-        'user/info',
-        {
-          //配置请求头Authorization字段，验证token
-          headers:{
-            'Authorization':token
-          }
-        }).then(res=>{
+        'user/info'
+    ).then(res=>{
       if(!res.data.code){
         //验证成功后，返回的code值为0
         //存储服务器查询后的最新信息到userInfo
        this.userInfo = res.data.msg;
       }
     }).catch(err=>console.log(err.message));
-  }
+  },
 }
 </script>
 
@@ -202,6 +216,10 @@ export default {
       span{
         font-size: 13px;
         display: inline-block;
+        //跳转标签样式
+        a{
+          color: black;
+        }
       }
     }
   }

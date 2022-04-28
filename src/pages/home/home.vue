@@ -3,13 +3,13 @@
 <!--顶部搜索栏-->
 <search />
 <!--  顶部导航栏-->
-  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated>
+  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated sticky offset-top="11vw">
     <van-tab v-for="(val,index) in kinds" :title="val" :key="index">
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" style="min-height: 100%">
 <!--   商品导航     -->
         <van-grid :border="false" :column-num="6">
           <van-grid-item v-for="item in 12" :key="item" class="grid-shops-banr">
-            <van-image src="https://img01.yzcdn.cn/vant/apple-1.jpg" />
+            <img src="../../assets/th.jpg" />
             <span>待开发</span>
           </van-grid-item>
         </van-grid>
@@ -23,7 +23,7 @@
 
 <script>
 //导入vant组件
-import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem,Image} from "vant";
+import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem} from "vant";
 //导入搜索框
 import search from "@/components/search";
 import shops from "@/components/shops";
@@ -40,7 +40,6 @@ export default {
     [Tabs.name]:Tabs,
     [Grid.name]:Grid,
     [GridItem.name]:GridItem,
-    [Image.name]:Image,
     search,
     shops
   },
@@ -66,12 +65,12 @@ export default {
 
 <style lang="less" scoped>
 #home{
-  height: 100%;
+  //height: 100%;
   background-color: #F8F9F9;
 
   //顶部导航栏样式
   .van-tabs{
-    height: 87%;
+    //height: 87%;
     width: 100%;
     position: relative;
     top: 6%;
@@ -94,10 +93,16 @@ export default {
   }
   //商品导航栏样式
   .van-grid{
-    margin: 10px 0;
+    margin: 50px 0 10px;
     //项目样式
     .grid-shops-banr{
       height: 65px;
+
+      //图片样式
+      img{
+        height: 30px;
+        width: 30px;
+      }
 
       span{
         height: 12px;

@@ -22,7 +22,8 @@ import {AddressEdit, Toast} from 'vant';
 import { areaList } from '@vant/area-data';
 //导入顶部导航组件
 import topBar from "@/pages/userAddress/topBar";
-import axios from "axios";
+//导入axios配置对象
+import axios from '../../uitls/axios';
 
 export default {
   name: "addAdress",
@@ -52,13 +53,11 @@ export default {
     onSave(content) {
         //当状态为修改、并且没有使用过设置默认地址滑块时，将初始数据的isDefault值赋给this.isDefault
         if(this.times === 0 && this.isShowDelete) this.isDefault = this.addressInfo.isDefault;
-        //获取本地存储token
-        let token = window.localStorage.getItem('token');
         //添加/修改数据
-        this.addAddress(content,token);
+        this.addAddress(content);
     },
 
-    addAddress(content,token){
+    addAddress(content){
       //保存请求地址  默认为新增收货地址请求路径
       let questUrl = 'addAddress';
       //当this.isShoeDelete为true时，表示当前是修改状态，将请求路径改为修改状态
@@ -80,11 +79,6 @@ export default {
       axios.post(
           'user/'+questUrl,
           data,
-          {
-            headers:{
-              'Authorization':token
-            }
-          }
       ).then(res=>{
         if (!res.data.code){
           Toast(res.data.msg)//成功提示
@@ -99,11 +93,6 @@ export default {
       axios.post(
           'user/deleteAddress',
           {id:this.addressInfo.id},
-          {
-            headers:{
-              'Authorization':window.localStorage.getItem('token')
-            }
-          }
       ).then(res=>{
         if(!res.data.code){
           this.$router.replace('/myAddress')

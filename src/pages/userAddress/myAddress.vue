@@ -22,7 +22,8 @@
 import {AddressList, Toast,Empty} from 'vant'
 //导入顶部导航组件
 import topBar from "@/pages/userAddress/topBar";
-import axios from "axios";
+//导入axios配置对象
+import axios from '../../uitls/axios';
 
 export default {
   name: "myAdress",
@@ -59,12 +60,7 @@ export default {
   mounted() {
     //将数据库的地址数据保存到list
     axios.get(
-        'user/myAddress',
-        {
-          headers:{
-            "Authorization": window.localStorage.getItem('token')
-          }
-        }
+        'user/myAddress'
     ).then(res=>{
       if (!res.data.code){
         this.list = res.data.results; //返回的数据交给list
@@ -76,8 +72,9 @@ export default {
             val.isDefault = false;
           }
         })
+      }else{
+        Toast(res.data.msg); //失败提示
       }
-      return Toast(res.data.msg); //失败提示
     }).catch(()=>{Toast('服务器繁忙')})
   }
 }

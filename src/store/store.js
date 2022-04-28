@@ -6,8 +6,8 @@ import vue from "vue";
 import allShops from "@/store/shops";
 //导入购物车商品数据模块
 import buyCar from '@/store/buyCar'
-/*//导入用户信息模块
-import userInfo from "@/store/userInfo";*/
+//导入订单数据模块
+import orders from "@/store/orders";
 //注册vuex
 vue.use(Vuex);
 
@@ -17,6 +17,6 @@ export default new Vuex.Store({
     modules:{
         allShops, //商品数据
         buyCar,//购物车数据
-        // userInfo  //用户信息
+        orders,//订单数据
     }
 })

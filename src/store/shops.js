@@ -1,10 +1,11 @@
 
 //全部商品数据
 import axios from "axios";
-
-const allShops = {
+//导出商品信息模块
+export default {
     namespaced: true,
     actions:{
+        //获取所有商品数据
         getAllShops(context){
             axios.get('/api/getShops')
                 .then(res=>{
@@ -21,9 +22,6 @@ const allShops = {
         }
     },
     state:{
-        allShops:[]
+        allShops:[]//储存所有商品数据
     }
 }
-
-//导出商品信息模块
-export default allShops;

@@ -1,22 +1,17 @@
 //用户信息修改混合
 
-import axios from "axios";
+//导入axios配置对象
+import axios from '../uitls/axios';
 import {Toast} from "vant";
 
 const updateInfo = {
     methods:{
         postAxios(url,data){
-            //获取本地存储token
-            let token = window.localStorage.getItem('token');
             //发送axios
             axios.post(
                 'user/'+url,
-                data,
-                {
-                    headers:{
-                        'Authorization':token
-                    }
-                })
+                data
+            )
                 .then(res=>{
                     //判断是否成功
                     if(!res.data.code) {

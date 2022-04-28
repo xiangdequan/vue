@@ -14,6 +14,8 @@ const shops = require("./router/shops");
 const userAddress = require('./router/userAddress');
 //导入添加购物车相关路由
 const buyCar = require('./router/buyCar');
+//导入订单中心路由配置
+const orders = require('./router/orders');
 
 //导入验证插件
 const joi = require("joi");
@@ -61,6 +63,8 @@ app.use('/api',shops);
 app.use('/user',userAddress);
 //购物车相关操作路由
 app.use('/user',buyCar);
+//订单中心路由
+app.use('/user',orders);
 
 //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
 app.use((err,req,res,next)=>{

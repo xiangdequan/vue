@@ -53,7 +53,8 @@
 
 <script>
 import {SwipeCell,CheckboxGroup,Empty,SubmitBar,Checkbox,Stepper,Card,Button,Toast,Tag,NavBar,Dialog} from 'vant'
-import axios from "axios";
+//导入axios配置对象
+import axios from '../../uitls/axios';
 import {mapState,mapActions} from "vuex";
 
 export default {
@@ -137,12 +138,7 @@ export default {
     axiosForClear(){
       //发送请求清空购物车
       axios.delete(
-          'user/clearAll',
-          {
-            headers:{
-              'Authorization':window.localStorage.getItem('token')
-            }
-          }
+          'user/clearAll'
       ).then(res=>{
         if (!res.data.code){
           this.getBuyCarShop();//触发vuex中购物车模块数据更新
@@ -158,11 +154,6 @@ export default {
       axios.post(
           'user/deleteShop',
           {shopId},
-          {
-            headers:{
-              'Authorization':window.localStorage.getItem('token')
-            }
-          }
       ).then(res=>{
         if(!res.data.code){
           Toast('已删除');//成功删除提示
@@ -180,11 +171,6 @@ export default {
       axios.post(
           'user/updateNum',
           {shopId,num},
-          {
-            headers:{
-              'Authorization':window.localStorage.getItem('token')
-            }
-          }
       ).then(res=>{
         if (res.data.code) Toast('数量修改失败')
       })
@@ -202,6 +188,8 @@ export default {
     }
   },
   mounted() {
+    //在绑定时，触发购物车模块方法，获取数据库信息
+    this.$store.dispatch('buyCar/getBuyCarShop');
     //当组件绑定时，从vuex中购物车模块获取已选中商品，赋值给result,以达到切换页面，商品选中状态不丢失的效果
     this.result = this.$store.state.buyCar.checkedShops;
   }
