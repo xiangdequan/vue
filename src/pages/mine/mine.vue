@@ -16,14 +16,14 @@
   <div class="orders">
     <p>订单管理<span><router-link :to="{name:'myOrders',params:{type:'全部',index:0}}">查看全部 ></router-link></span></p>
     <van-grid :column-num="4" >
-      <van-grid-item icon="pending-payment" text="待支付" :badge="beforePay" :to="{name:'myOrders',params:{type:'待付款',index:1}}"/>
-      <van-grid-item icon="clock-o" text="待发货" :badge="beforeExpress" :to="{name:'myOrders',params:{type:'待发货',index:2}}"/>
-      <van-grid-item icon="logistics" text="待收货" :badge="beforeGet" :to="{name:'myOrders',params:{type:'待收货',index:3}}"/>
-      <van-grid-item icon="good-job-o" text="待评价" :badge="beforeJudge" :to="{name:'myOrders',params:{type:'待评价',index:4}}"/>
+      <van-grid-item icon="pending-payment" text="待支付" :badge="beforePay" :to="{name:'myOrders',params:{index:1}}"/>
+      <van-grid-item icon="clock-o" text="待发货" :badge="beforeExpress" :to="{name:'myOrders',params:{index:2}}"/>
+      <van-grid-item icon="logistics" text="待收货" :badge="beforeGet" :to="{name:'myOrders',params:{index:3}}"/>
+      <van-grid-item icon="good-job-o" text="待评价" :badge="beforeJudge" :to="{name:'myOrders',params:{index:4}}"/>
     </van-grid>
   </div>
 <!-- 闪购钱包 -->
-  <div class="pcoket">
+  <div class="pcoket" @click="goAddress">
     <van-icon name="paid" />闪购钱包<van-icon name="arrow" />
   </div>
 <!--其他设置  -->
@@ -107,6 +107,9 @@ export default {
       let router = this.$router;
       //根据title匹配相应跳转
       switch (title){
+        case '闪购钱包' :
+          router.push('/wallet');
+          break;
         case '添加收货地址' :
           router.push('/addAddress');
           break;
@@ -132,10 +135,10 @@ export default {
     }
   },
   //绑定前获取用户信息
-  beforeMount() {
+  mounted() {
     //发送请求验证token
     axios.get(
-        'user/info'
+        'user/info',
     ).then(res=>{
       if(!res.data.code){
         //验证成功后，返回的code值为0

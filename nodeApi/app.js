@@ -69,7 +69,7 @@ app.use('/user',orders);
 //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
 app.use((err,req,res,next)=>{
     //通过错误对象的名称来判断是否为token解析失败产生的错误，如果是则返回错误信息
-    if(err.name === "UnauthorizedError") return res.send({code:2,msg:"无效的token!"});
+    if(err.name === "UnauthorizedError") return res.send({code:2,msg:"登录失效,请重新登录！"});
     //全局错误级别中间件中，捕获验证失败的错误，并把验证失败的结果响应给客户端：
     if(err instanceof joi.ValidationError) return res.rep("输入不合法");
     //处理其他错误

@@ -13,6 +13,7 @@ export default [
     //商品详情页
     {
         path:'/shopInfo/:id',
+        name:'shopInfo',
         component:()=> import('@/pages/shopInfo/shopInfo')
     },
     //用户信息管理
@@ -57,9 +58,14 @@ export default [
         component: ()=> import('@/pages/orders/myOrders'),
         props: true
     },
-    //输入密码
+    //闪购钱包
     {
-        path: '/inputPassword',
-        component: ()=> import('@/pages/buy/inputPassword')
+        path: '/wallet',
+        component:()=>import('@/pages/wallet/wallet')
+    },
+    //我的收藏
+    {
+        path: '/myCollect',
+        component:()=>import('@/pages/myCollect/myCollect')
     }
 ]

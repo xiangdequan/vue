@@ -13,10 +13,10 @@
     </template>
   </van-nav-bar>
 <!-- 菜单导航 -->
-  <van-tabs class="bar" v-model="active" @change="getRightOrders" animated swipeable sticky offset-top="9vw">
+  <van-tabs class="bar" v-model="active"  animated swipeable sticky offset-top="9vw">
     <van-tab class="barContent" v-for="barName in barName" :key="barName" :title="barName" :swipeable="true">
 <!--   空状态   -->
-      <van-empty description="还没有订单呢！" v-if="!fliterOrders"/>
+      <van-empty description="还没有相应订单呢！" style="padding-top: 35%" v-if="!fliterOrders.length"/>
 <!--  商品订单详情    -->
       <div class="order">
       <!--    单个订单    -->
@@ -41,7 +41,7 @@
             <div class="totalPrice">实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
             <!--    待支付订单操作      -->
             <div v-show="item.orderKind === '待支付'">
-              <van-button plain type="primary" color="red" size="small" hairline round>删除订单</van-button>
+              <van-button plain type="primary" color="red" size="small" hairline round @click="deleteOrder(item.id)">删除订单</van-button>
               <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round>立即支付</van-button>
             </div>
             <!--    待发货订单操作      -->
@@ -65,8 +65,9 @@
 </template>
 
 <script>
-import {NavBar,Tab, Icon, Tabs,Card,Tag,Button,Empty} from 'vant'
+import {NavBar, Tab, Dialog, Icon, Tabs, Card, Tag, Button, Empty, Toast} from 'vant'
 import {mapState} from "vuex";
+import axios from "@/uitls/axios";
 
 export default {
   name: "myOrders",
@@ -78,17 +79,24 @@ export default {
     [Tag.name]:Tag,
     [Card.name]:Card,
     [Empty.name]:Empty,
+    [Toast.name]:Toast,
+    [Dialog.name]:Dialog,
     [Button.name]:Button
   },
   data(){
     return {
       active:0,//用于绑定点击导航栏的索引
       barName:['全部','待支付','待发货','待收货','待评价'],//用于保存导航栏标题
-      fliterOrders:[],//用于储存商品
+      // fliterOrders:[],//用于储存商品
     }
   },
   computed:{
     ...mapState('orders',['orders']),//获取vuex中所有订单信息
+    //过滤符合要求的订单数据
+    fliterOrders(){
+      if(!this.active) return this.orders;//当切换到全部时将计算属性所有订单的值赋给orders
+      return this.orders.filter(val => val.orderKind === this.barName[this.active]);//当切换到其他导航栏时将过滤出计算属性对应值赋给orders
+    }
   },
   methods:{
     //点击后退页面
@@ -100,21 +108,35 @@ export default {
     searchOrder(){
       alert('待开发')
     },
-    //根据点击的标题获取订单信息 默认传参 name:索引 title:标题,
-    getRightOrders(name,title){
-      //过滤数据
-      if(!name) return this.fliterOrders = this.orders;//当切换到全部时将计算属性所有订单的值赋给orders
-      this.fliterOrders = this.orders.filter(val => val.orderKind === title);//当切换到全部时将过滤出计算属性对应值赋给orders
+    //删除订单 传参当前商品的id
+    deleteOrder(id){
+      //弹窗提示
+      Dialog.confirm({
+        title: '删除订单',
+        message: '是否删除当前订单信息?此操作无法恢复',
+      })
+          .then(() => {
+            // on confirm
+            axios.post(
+                'user/deleteOrder',
+                {id}
+            ).then(res=>{
+              if(!res.data.code){
+                this.$store.dispatch('orders/getOrders');//触发vuex订单模块数据更新
+                Toast.success(res.data.msg);//成功提醒
+              }else{
+                Toast.fail(res.data.msg);//失败提醒
+              }
+            }).catch(()=>Toast('服务器繁忙'));
+          })
+          .catch(() => {
+            // on cancel
+          });
     }
   },
   mounted() {
-    //当组件挂载时 根据用户在个人中心点击后的路由传参过滤相应的订单数据，
-    if(this.$route.params.type){
-        this.active = this.$route.params.index;
-        //当点击全部进入时，显示全部订单
-        if(this.$route.params.type === '全部') return this.fliterOrders = this.orders;
-        this.fliterOrders = this.orders.filter(val => val.orderKind === this.$route.params.type);
-    }
+    //当组件挂载时 将路由传递过来的索引赋值给本地变量，用于精准匹配订单导航栏以及订单数据
+    if(this.$route.params.index)  this.active = this.$route.params.index;
   }
 }
 </script>

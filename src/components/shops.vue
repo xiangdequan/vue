@@ -46,7 +46,7 @@ export default {
     },
     aSize:{ //a标签字体大小，价格
       type: String
-    }
+    },
   },
   components:{
     [Tag.name]:Tag,

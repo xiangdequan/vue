@@ -9,10 +9,6 @@
     </van-sidebar>
   <!-- 对应导航栏内容   -->
     <div class="shopBar">
-<!-- 轮播     -->
-      <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white">
-        <van-swipe-item v-for="item in shops" :key="item.id"><img :src="item.img"></van-swipe-item>
-      </van-swipe>
 <!--  商品展示  //当商品为推荐时，展示所有商品    -->
         <shops
             width="36%"
@@ -30,7 +26,7 @@
 
 <script>
 //导入vant
-import { Sidebar, SidebarItem,Swipe,SwipeItem} from 'vant';
+import { Sidebar, SidebarItem} from 'vant';
 //导入search、shops组件
 import Shops from "@/components/shops";
 import Search from "../../components/search";
@@ -45,8 +41,6 @@ export default {
     Search,
     [Sidebar.name]:Sidebar,
     [SidebarItem.name]:SidebarItem,
-    [Swipe.name]:Swipe,
-    [SwipeItem.name]:SwipeItem
   },
   data(){
     return {

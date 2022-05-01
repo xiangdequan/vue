@@ -81,9 +81,10 @@ export default {
           data,
       ).then(res=>{
         if (!res.data.code){
-          Toast(res.data.msg)//成功提示
+          Toast.success(res.data.msg);//成功提示
+          this.$router.replace('/myAddress');
         }else{
-          Toast(res.data.msg)
+          Toast.fail(res.data.msg)
         }
       })
     },
@@ -95,7 +96,7 @@ export default {
           {id:this.addressInfo.id},
       ).then(res=>{
         if(!res.data.code){
-          this.$router.replace('/myAddress')
+          this.$router.back();
           return Toast(res.data.msg);//成功提示
         }
         Toast(res.data.msg); //失败提示

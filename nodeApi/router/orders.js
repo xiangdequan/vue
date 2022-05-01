@@ -12,5 +12,8 @@ router.post('/submitOrders',handle.submitOrders);
 //查询所有订单
 router.get('/getOrders',handle.getOrders);
 
+//删除订单
+router.post('/deleteOrder',handle.deleteOrder);
+
 //导出router
 module.exports = router;

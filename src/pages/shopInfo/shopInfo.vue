@@ -33,7 +33,7 @@
 
 <script>
 import {Icon, Tag, GoodsAction, GoodsActionIcon, GoodsActionButton, Toast} from 'vant'
-import axios from "axios";
+import axios from '../../uitls/axios';
 import isShowBadge from "@/mixin/isShowBadge"; //混合，内置过滤器、计算属性，用于处理购物车角标
 
 export default {
@@ -55,7 +55,7 @@ export default {
   methods:{
     back(){
       //返回上一页
-      this.$router.back()
+      this.$router.back();
     },
     addBuyCar(){
       this.show = true
@@ -81,8 +81,10 @@ export default {
       let shops = [{num:1,shopId:this.shopInfo.id,...this.shopInfo}];
       //当前商品数据包含了kind这个属性但是在订单提交页不需要这个属性，所以删除
       delete shops[0].kind;
-        //跳转结算页  并携带当前商品参数  整合好的参数
-      this.$router.push({name:'submitOrders',params:{shops}});
+      //修改vuex当商品结算模块数据
+      this.$store.commit('buyCar/GetBuyShopInfo',shops);
+      //跳转结算页
+      this.$router.push('/submitOrders');
     },
     //验证加入购物车请求结果
     schema(data){

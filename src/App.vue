@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <transition name="van-fade">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 

@@ -4,10 +4,13 @@ const db = require('../mysql/mysql');
 
 //提交订单路由处理函数
 exports.submitOrders = (req,res)=>{
+    // console.log(Object.keys(req.body[0]))
+    // console.log(Object.values(req.body[0]))
     //定义sql
-    const sql = 'insert into myorders set ?';
+    // const sql = `INSERT INTO myorders (orderNumber,totalPrice,name,orderAddress,tel,orderKind,orderTime,payKind,userName,shopId,num,price,font,promise,img,discount) VALUES ?`;
+    const sql = `insert into myorders set ?`;
     //操作数据库
-    db.query(sql,req.body,(err,results)=>{
+    db.query(sql,[...req.body],(err,results)=>{
         //判断是否出错
         if(err) return res.rep('服务器繁忙');
         //判断是否成功
@@ -31,5 +34,20 @@ exports.getOrders = (req,res)=>{
             msg:'已找到相关结果',
             results
         })
+    })
+}
+
+//根据id删除订单
+exports.deleteOrder = (req,res)=>{
+    //定义sql
+    const sql = 'delete from myorders where id = ? and userName = ?';
+    //操作数据库
+    db.query(sql,[req.body.id,req.user.userName],(err,results)=>{
+        //失误
+        if (err) return res.rep('删除失败');
+        //删除失败
+        if (results.affectedRows === 0) return res.rep('删除失败');
+        //成功返回
+        res.rep('删除成功',0);
     })
 }

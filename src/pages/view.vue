@@ -1,8 +1,12 @@
 <template>
 <div id="pageView">
   <keep-alive include="buy">
-    <router-view></router-view>
+<!--  组件动画  -->
+    <transition name="van-fade">
+      <router-view key="1"></router-view>
+    </transition>
   </keep-alive>
+
   <bar/>
 </div>
 </template>
@@ -15,6 +19,8 @@ export default {
     Bar,
   },
   mounted() {
+    //在绑定时，触发购物车模块方法，获取数据库信息
+    this.$store.dispatch('buyCar/getBuyCarShop');
     //触发vuex中订单管理模块数据更新
     this.$store.dispatch('orders/getOrders');
   }

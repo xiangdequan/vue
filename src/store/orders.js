@@ -1,5 +1,6 @@
 //订单中心
 import axios from "@/uitls/axios";
+import {Toast} from "vant";
 
 export default {
     namespaced:true,//开启命名空间
@@ -10,7 +11,11 @@ export default {
                 .then(res=>{
                     //请求到数据后，触发GetOrders方法修改vuex数据
                     if(!res.data.code) return context.commit('GetOrders',res.data.results);
-                    //未获取到数据不做操作
+                    //失败后将数据初始化不做操作
+                    if(res.data.code){
+                        context.commit('GetOrders',[]);
+                        Toast(res.data.msg);
+                    }
                 })
         }
     },

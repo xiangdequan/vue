@@ -1,0 +1,1001 @@
+Index: src/pages/home/home.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/home/home.vue b/src/pages/home/home.vue
+--- a/src/pages/home/home.vue	
++++ b/src/pages/home/home.vue	
+@@ -3,27 +3,31 @@
+ <!--顶部搜索栏-->
+ <search />
+ <!--  顶部导航栏-->
+-  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated sticky offset-top="11vw">
+-    <van-tab v-for="(val,index) in kinds" :title="val" :key="index">
+-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" style="min-height: 100%">
+-<!--   商品导航     -->
+-        <van-grid :border="false" :column-num="6">
+-          <van-grid-item v-for="item in 12" :key="item" class="grid-shops-banr">
+-            <img src="../../assets/th.jpg" />
+-            <span>待开发</span>
+-          </van-grid-item>
+-        </van-grid>
+-<!-- 商品展示区   需要传数据  标签的宽度   //当商品为推荐时，展示所有商品-->
+-        <shops :shops="shops"/>
+-      </van-pull-refresh>
+-    </van-tab>
+-  </van-tabs>
++<!--  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated>-->
++<!--    <van-tab v-for="(val,index) in kinds" :title="val" :key="index">-->
++<!--    </van-tab>-->
++<!--  </van-tabs>-->
++  <!-- 轮播     -->
++  <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white" >
++    <van-swipe-item v-for="item in shops" :key="item.id" @click="goShopInfo(item.id)"><img :src="item.img" ></van-swipe-item>
++  </van-swipe>
++  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功">
++    <!--   商品导航     -->
++    <van-grid :border="false" :column-num="6">
++      <van-grid-item v-for="item in 12" :key="item" class="grid-shops-banr">
++        <img src="../../assets/th.jpg" />
++        <span>待开发</span>
++      </van-grid-item>
++    </van-grid>
++    <!-- 商品展示区   需要传数据  标签的宽度   //当商品为推荐时，展示所有商品-->
++    <shops :shops="shops"/>
++  </van-pull-refresh>
+ </div>
+ </template>
+ 
+ <script>
+ //导入vant组件
+-import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem} from "vant";
++import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem,Swipe,SwipeItem} from "vant";
+ //导入搜索框
+ import search from "@/components/search";
+ import shops from "@/components/shops";
+@@ -39,6 +43,8 @@
+     [Tab.name]:Tab,
+     [Tabs.name]:Tabs,
+     [Grid.name]:Grid,
++    [Swipe.name]:Swipe,
++    [SwipeItem.name]:SwipeItem,
+     [GridItem.name]:GridItem,
+     search,
+     shops
+@@ -54,26 +60,38 @@
+     //下拉刷新 axios更新
+     onRefresh() {
+       setTimeout(() => {
+-        Toast('刷新成功');
+         this.isLoading = false;
+         this.count++;
+       }, 1000);
+     },
++    goShopInfo(id){
++      this.$router.push({name:'shopInfo',params:{id}})
++    },
+   },
+ }
+ </script>
+ 
+ <style lang="less" scoped>
+ #home{
+-  //height: 100%;
++  height: 100%;
+   background-color: #F8F9F9;
+ 
+-  //顶部导航栏样式
+-  .van-tabs{
+-    //height: 87%;
+-    width: 100%;
++  //轮播
++  .my-swipe .van-swipe-item {
++    height: ;
+     position: relative;
+     top: 6%;
++    color: #fff;
++
++    img{
++      height: 50%;
++      width: 100%;
++      border-radius: 10px;
++    }
++  }
++  //顶部导航栏内容样式
++  .van-pull-refresh{
++    width: 100%;
+     overflow-y: scroll;
+ 
+     //去除滚动条样式
+@@ -81,57 +99,54 @@
+       width: 0;
+     }
+ 
+-      //顶部导航栏内容样式
+-      .van-pull-refresh{
+-        width: 100%;
+-      }
+-  }
+-  //定义混合用于控制span样式
+-  .span(){
+-    display: inline-block;
+-    margin-top: 2px;
+-  }
+-  //商品导航栏样式
+-  .van-grid{
+-    margin: 50px 0 10px;
+-    //项目样式
+-    .grid-shops-banr{
+-      height: 65px;
++    //定义混合用于控制span样式
++    .span(){
++      display: inline-block;
++      margin-top: 2px;
++    }
++
++    //商品导航栏样式
++    .van-grid{
++      margin: 5px 0 10px;
++      //项目样式
++      .grid-shops-banr{
++        height: 65px;
+ 
+-      //图片样式
+-      img{
+-        height: 30px;
+-        width: 30px;
+-      }
++        //图片样式
++        img{
++          height: 30px;
++          width: 30px;
++        }
+ 
+-      span{
+-        height: 12px;
+-        font-size: 12px;
+-        //调用混合
+-        .span();
+-      }
+-    }
+-  }
+-  //商品展示区
+-  .grid-shops{
+-    min-height: 100%;
+-    margin-bottom: 0!important;
++        span{
++          height: 12px;
++          font-size: 12px;
++          //调用混合
++          .span();
++        }
++      }
++    }
++    //商品展示区
++    .grid-shops{
+ 
+-    .van-grid-item{
+-      padding-top: 0 !important;
+-    }
+-    //项目样式
+-    .grid-shops-show{
+-      height: 240px !important;
+-      border: 1px solid red;
+-      //图片样式
+-      .van-image{
+-        height: 86%;
+-      }
+-      span{
+-        .span();
++      .van-grid-item{
++        padding-top: 0 !important;
++      }
++      //项目样式
++      .grid-shops-show{
++        height: 240px !important;
++        border: 1px solid red;
++        //图片样式
++        .van-image{
++          height: 86%;
++        }
++        span{
++          .span();
++        }
+       }
+     }
++
++
+   }
+ }
+ </style>
+\ No newline at end of file
+Index: src/pages/mine/mine.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/mine/mine.vue b/src/pages/mine/mine.vue
+--- a/src/pages/mine/mine.vue	
++++ b/src/pages/mine/mine.vue	
+@@ -16,14 +16,14 @@
+   <div class="orders">
+     <p>订单管理<span><router-link :to="{name:'myOrders',params:{type:'全部',index:0}}">查看全部 ></router-link></span></p>
+     <van-grid :column-num="4" >
+-      <van-grid-item icon="pending-payment" text="待支付" :badge="beforePay" :to="{name:'myOrders',params:{type:'待付款',index:1}}"/>
+-      <van-grid-item icon="clock-o" text="待发货" :badge="beforeExpress" :to="{name:'myOrders',params:{type:'待发货',index:2}}"/>
+-      <van-grid-item icon="logistics" text="待收货" :badge="beforeGet" :to="{name:'myOrders',params:{type:'待收货',index:3}}"/>
+-      <van-grid-item icon="good-job-o" text="待评价" :badge="beforeJudge" :to="{name:'myOrders',params:{type:'待评价',index:4}}"/>
++      <van-grid-item icon="pending-payment" text="待支付" :badge="beforePay" :to="{name:'myOrders',params:{index:1}}"/>
++      <van-grid-item icon="clock-o" text="待发货" :badge="beforeExpress" :to="{name:'myOrders',params:{index:2}}"/>
++      <van-grid-item icon="logistics" text="待收货" :badge="beforeGet" :to="{name:'myOrders',params:{index:3}}"/>
++      <van-grid-item icon="good-job-o" text="待评价" :badge="beforeJudge" :to="{name:'myOrders',params:{index:4}}"/>
+     </van-grid>
+   </div>
+ <!-- 闪购钱包 -->
+-  <div class="pcoket">
++  <div class="pcoket" @click="goAddress">
+     <van-icon name="paid" />闪购钱包<van-icon name="arrow" />
+   </div>
+ <!--其他设置  -->
+@@ -107,6 +107,9 @@
+       let router = this.$router;
+       //根据title匹配相应跳转
+       switch (title){
++        case '闪购钱包' :
++          router.push('/wallet');
++          break;
+         case '添加收货地址' :
+           router.push('/addAddress');
+           break;
+@@ -132,10 +135,10 @@
+     }
+   },
+   //绑定前获取用户信息
+-  beforeMount() {
++  mounted() {
+     //发送请求验证token
+     axios.get(
+-        'user/info'
++        'user/info',
+     ).then(res=>{
+       if(!res.data.code){
+         //验证成功后，返回的code值为0
+Index: src/pages/userInfo/userInfo.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/userInfo/userInfo.vue b/src/pages/userInfo/userInfo.vue
+--- a/src/pages/userInfo/userInfo.vue	
++++ b/src/pages/userInfo/userInfo.vue	
+@@ -10,13 +10,13 @@
+       @click-right="loginOut"
+   />
+   <van-cell-group style="margin: 6% 0">
+-    <van-cell icon="user-o" is-link title="用户头像修改" size="large" @click="isShow('用户头像修改')" />
+-    <van-cell icon="edit" is-link title="用户昵称修改" size="large" @click="isShow('用户昵称修改')" />
+-    <van-cell icon="closed-eye" is-link title="用户密码修改" size="large" @click="isShow('用户密码修改')" />
+-    <van-cell icon="records" is-link title="修改所有信息" size="large" @click="isShow('修改所有信息')" />
+-    <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow('注销账号')" />
++    <van-cell icon="user-o" is-link title="用户头像修改" size="large" @click="isShow" />
++    <van-cell icon="edit" is-link title="用户昵称修改" size="large" @click="isShow" />
++    <van-cell icon="closed-eye" is-link title="用户密码修改" size="large" @click="isShow" />
++    <van-cell icon="records" is-link title="修改所有信息" size="large" @click="isShow" />
++    <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow" />
+   </van-cell-group>
+-  <van-action-sheet v-model="show" :title="title">
++  <van-action-sheet v-model="show" :title="title" :closeable="false">
+     <updateUserImg v-show="title === '用户头像修改'"/>
+     <updatePassword v-show="title === '用户密码修改'"/>
+     <updateName v-show="title === '用户昵称修改'"/>
+@@ -83,9 +83,9 @@
+           }).catch(()=>{})
+     },
+     //是否显示  传参操作类型
+-    isShow(title){
++    isShow(event){
+       //根据操作类型  定义标题内容
+-      this.title = title;
++      this.title = event.target.innerText;
+       //取反
+       this.show = !this.show;
+     }
+Index: src/pages/userAddress/myAddress.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/userAddress/myAddress.vue b/src/pages/userAddress/myAddress.vue
+--- a/src/pages/userAddress/myAddress.vue	
++++ b/src/pages/userAddress/myAddress.vue	
+@@ -36,6 +36,7 @@
+   data() {
+     return {
+       chosenAddressId: '',
++      checkAddress:{},//选中的地址
+       list: [],//用于保存用户的收货地址
+     };
+   },
+@@ -50,12 +51,21 @@
+     },
+     //组件自带  选中切换事件，默认传参，item:当前选中项的地址对象,index:当前选中项索引
+     select(item){
++      this.checkAddress = item; // 将选中的地址赋值给本地
+       //切换选中地址触发  更改选中状态  根据路由传参执行操作，如果该值为未定义就不执行
+-      if(this.$route.params.type){
++      // if(this.$route){
+         //跳转商品结算页面，并将点击的该项地址传过去
+-        this.$router.replace({name:'submitOrders',params:{address:item}})
+-      }
++        // this.$router.replace({name:'submitOrders',params:{address:item}})
++      // }
++    }
++  },
++  //路由生命周期  离开
++  beforeRouteLeave(to,from,next){
++    //当目标路由为提交订单时，且当前address不为空对象时，携带当前选中的参数
++    if(to.name === 'submitOrders' && Object.keys(this.checkAddress).length){
++        to.params.address = this.checkAddress;
+     }
++    next();//放行
+   },
+   mounted() {
+     //将数据库的地址数据保存到list
+Index: src/components/shops.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/shops.vue b/src/components/shops.vue
+--- a/src/components/shops.vue	
++++ b/src/components/shops.vue	
+@@ -46,7 +46,7 @@
+     },
+     aSize:{ //a标签字体大小，价格
+       type: String
+-    }
++    },
+   },
+   components:{
+     [Tag.name]:Tag,
+Index: nodeApi/app.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/nodeApi/app.js b/nodeApi/app.js
+--- a/nodeApi/app.js	
++++ b/nodeApi/app.js	
+@@ -69,7 +69,7 @@
+ //全局注册错误级别中间件，用来处理错误保证程序继续运行  同时捕捉token解析失败的错误(如果用户端传来的token不合法或过期会导致解析失败)
+ app.use((err,req,res,next)=>{
+     //通过错误对象的名称来判断是否为token解析失败产生的错误，如果是则返回错误信息
+-    if(err.name === "UnauthorizedError") return res.send({code:2,msg:"无效的token!"});
++    if(err.name === "UnauthorizedError") return res.send({code:2,msg:"登录失效,请重新登录！"});
+     //全局错误级别中间件中，捕获验证失败的错误，并把验证失败的结果响应给客户端：
+     if(err instanceof joi.ValidationError) return res.rep("输入不合法");
+     //处理其他错误
+Index: src/pages/view.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/view.vue b/src/pages/view.vue
+--- a/src/pages/view.vue	
++++ b/src/pages/view.vue	
+@@ -1,8 +1,12 @@
+ <template>
+ <div id="pageView">
+   <keep-alive include="buy">
+-    <router-view></router-view>
++<!--  组件动画  -->
++    <transition name="van-fade">
++      <router-view key="1"></router-view>
++    </transition>
+   </keep-alive>
++
+   <bar/>
+ </div>
+ </template>
+@@ -15,6 +19,8 @@
+     Bar,
+   },
+   mounted() {
++    //在绑定时，触发购物车模块方法，获取数据库信息
++    this.$store.dispatch('buyCar/getBuyCarShop');
+     //触发vuex中订单管理模块数据更新
+     this.$store.dispatch('orders/getOrders');
+   }
+Index: src/pages/buy/submitOrders.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/buy/submitOrders.vue b/src/pages/buy/submitOrders.vue
+--- a/src/pages/buy/submitOrders.vue	
++++ b/src/pages/buy/submitOrders.vue	
+@@ -2,7 +2,8 @@
+ <div id="submitOrders">
+ <!-- 导航栏 -->
+   <van-nav-bar
+-      left-text="确认订单"
++      left-text="返回"
++      title="确认订单"
+       left-arrow
+       @click-left="goBack"
+   />
+@@ -39,16 +40,47 @@
+ <!-- 订单提交 -->
+   <van-submit-bar :price="shopsTotalPrice" button-text="提交订单" @submit="submitOrders" />
+ <!-- 弹出  支付方式 -->
+-  <van-action-sheet v-model="show"  :close-on-click-action="true" cancel-text="取消支付" @cancel="cancelPay">
++  <van-action-sheet v-model="show"  :close-on-click-action="true">
+     <div class="content" @click="payFor"><van-icon name="wechat-pay" color="green" size="19px"/>微信支付</div>
+     <div class="content" @click="payFor"><van-icon name="alipay" color="blue" size="19px"/>支付宝支付</div>
+     <div class="content" @click="payFor"><van-icon name="shopping-cart" color="red" size="19px"/>闪购钱包支付</div>
+   </van-action-sheet>
++<!-- 弹出支付密码输入框 -->
++  <van-popup v-model="passwordShow" position="bottom" style="height: 300px" @click-overlay="cancelPay">
++    <div>
++      <!-- 密码输入框 -->
++      <van-password-input
++          :error-info="errorInfo"
++          :value="payPassword"
++          :focused="showKeyboard"
++          @focus="showKeyboard = true"
++      />
++      <!-- 数字键盘 -->
++      <van-number-keyboard
++          v-model="payPassword"
++          :show="showKeyboard"
++          @blur="showKeyboard = false"
++          random-key-order
++      />
++    </div>
++  </van-popup>
+ </div>
+ </template>
+ 
+ <script>
+-import {NavBar, AddressList, Icon, Card, Tag, SubmitBar, ActionSheet, Toast} from 'vant'
++import {
++  NavBar,
++  AddressList,
++  Icon,
++  Card,
++  Tag,
++  SubmitBar,
++  ActionSheet,
++  Toast,
++  Popup,
++  PasswordInput,
++  NumberKeyboard
++} from 'vant'
+ //导入axios配置对象
+ import axios from '../../uitls/axios';
+ import {mapState} from 'vuex';
+@@ -61,6 +93,9 @@
+     [Icon.name]:Icon,
+     [Toast.name]:Toast,
+     [NavBar.name]:NavBar,
++    [Popup.name]:Popup,
++    [PasswordInput.name]:PasswordInput,
++    [NumberKeyboard.name]:NumberKeyboard,
+     [ActionSheet.name]:ActionSheet,
+     [SubmitBar.name]:SubmitBar,
+     [AddressList.name]:AddressList
+@@ -68,17 +103,45 @@
+   data(){
+     return {
+       show:false,//控制弹出层显示
++      passwordShow:false,//控制密码输入框
+       address:{},//收货地址
+       shops:[],//保存结算商品信息
++      payKind:'',//支付方式
++      payPassword: '',//支付密码
++      errorInfo:'',//密码错误提示
++      showKeyboard: true,//是否显示密码弹出层
+       shopsTotalPrice:0.00,//保存待结算商品所有价格
+     }
+   },
+   computed:{
+-    ...mapState('buyCar',["checkedShops",'totalPrice']),
++    ...mapState('buyCar',["checkedShops",'totalPrice','buyShop']),
++  },
++  watch:{
++    //监视密码输入框value值变化，当value值长度为6时发送请求验证密码
++    payPassword(newVal){
++      if(newVal.length === 6){
++        //密码正确  隐藏密码输入框
++        this.passwordShow = false;
++        this.payPassword = '';//清空输入框
++        //支付动画
++        Toast.loading({
++          message: '支付中...',
++          forbidClick: true,
++        });
++        //发送请求验证支付密码
++        this.axiosForOrders('待发货',this.payKind,'支付成功');
++      }
++    }
+   },
+   methods:{
+     goBack(){
+-      this.$router.replace({name:'buyCar'});//点击返回购物车
++      //当从商品详情页进入本页面时，点击导航栏时跳转回商品详情页，并携带当前商品的id
++      if(this.buyShop.length !== 0){
++        this.$router.replace(`/shopInfo/${this.shops[0].shopId}`);
++      }else{
++        //当从购物车进入本页面时，点击导航栏时跳转到购物车
++        this.$router.replace({name:'buyCar'});//点击返回购物车
++      }
+     },
+     //选择、编辑收货地址
+     checkAddress(){
+@@ -117,6 +180,7 @@
+           '/user/submitOrders',
+           this.expressData(orderKind,payKind)
+       ).then(res=>{
++        //判断是否支付成功
+         if(res.data.code){
+           Toast.fail(res.data.msg);//提交失败提示
+         }else{
+@@ -126,35 +190,38 @@
+             this.$store.dispatch('orders/getOrders');//触发vuex更新订单数据
+             this.$router.replace({name:'buyCar'});//跳转购物车页面
+            clearTimeout(timeout); //清除定时器
+-          },2000)
++          },1000)
+         }
+       }).catch(()=>{Toast.fail('服务器繁忙')})
+     },
+     //支付选项点击事件，通过event对象获取点击项的文本内容
+-    /*payFor(event){
+-      Toast.loading({
+-        message: '支付中...',
+-        forbidClick: true,
+-      });
+-      this.axiosForOrders('待发货',event.target.innerText,'支付成功');
+-    },*/
+-    payFor(){
+-      this.$router.push('/inputPassword')
++    payFor(event){
++      this.show = false;//隐藏支付方式框
++      this.passwordShow = true;//显示密码输入框
++      this.payKind = event.target.innerText;//将点击的支付方式保存到变量
+     },
+     //点击取消按钮处理函数
+     cancelPay(){
+       //发送请求，将本次结算的所有商品列为待支付，且跳转我的界面(replace)
+       Toast.loading({
+-        message: '取消中...',
++        message: '正在取消支付...',
+         forbidClick: true,
+       });
+-      this.axiosForOrders('待支付','未支付','已取消');
++      this.axiosForOrders('待支付','未支付','已取消支付');
+     }
++  },
++  //路由生命周期
++  beforeRouteLeave(to,from,next){
++    if (to.name === 'shopInfo'){
++      //假如是从商品结算页进入本页面时，无论是否支付，都清空vuex中单个商品结算的商品数据
++      this.$store.commit('buyCar/GetBuyShopInfo',[]);
++    }
++    next();
+   },
+   mounted() {
+-    //判断路由是否有参数传递，若没有就使用计算属性内商品数据
+-    if(this.$route.params.shops){
+-      this.shops = this.$route.params.shops;
++    //判断vuex单个商品结算模块是否有数据，若没有就使用计算属性内购物车已选中商品数据
++    if(this.buyShop.length){
++      this.shops = this.buyShop;
+       this.shopsTotalPrice = (this.shops[0].price)*100;
+     } else{
+       this.shops = this.checkedShops;
+@@ -173,7 +240,6 @@
+       }
+       Toast(res.data.msg); //失败提示
+     }).catch(()=>{Toast('服务器繁忙')});
+-    // console.log(this.shops)
+   }
+ }
+ </script>
+Index: src/pages/shopInfo/shopInfo.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/shopInfo/shopInfo.vue b/src/pages/shopInfo/shopInfo.vue
+--- a/src/pages/shopInfo/shopInfo.vue	
++++ b/src/pages/shopInfo/shopInfo.vue	
+@@ -33,7 +33,7 @@
+ 
+ <script>
+ import {Icon, Tag, GoodsAction, GoodsActionIcon, GoodsActionButton, Toast} from 'vant'
+-import axios from "axios";
++import axios from '../../uitls/axios';
+ import isShowBadge from "@/mixin/isShowBadge"; //混合，内置过滤器、计算属性，用于处理购物车角标
+ 
+ export default {
+@@ -55,7 +55,7 @@
+   methods:{
+     back(){
+       //返回上一页
+-      this.$router.back()
++      this.$router.back();
+     },
+     addBuyCar(){
+       this.show = true
+@@ -81,8 +81,10 @@
+       let shops = [{num:1,shopId:this.shopInfo.id,...this.shopInfo}];
+       //当前商品数据包含了kind这个属性但是在订单提交页不需要这个属性，所以删除
+       delete shops[0].kind;
+-        //跳转结算页  并携带当前商品参数  整合好的参数
+-      this.$router.push({name:'submitOrders',params:{shops}});
++      //修改vuex当商品结算模块数据
++      this.$store.commit('buyCar/GetBuyShopInfo',shops);
++      //跳转结算页
++      this.$router.push('/submitOrders');
+     },
+     //验证加入购物车请求结果
+     schema(data){
+Index: src/mixin/updateInfo.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/mixin/updateInfo.js b/src/mixin/updateInfo.js
+--- a/src/mixin/updateInfo.js	
++++ b/src/mixin/updateInfo.js	
+@@ -6,6 +6,22 @@
+ 
+ const updateInfo = {
+     methods:{
++        //清空data中的数据
++        clearData(){
++            //循环遍历data每一项
++            for(let key in this.$data){
++                //判断key的数据类型是否为数组或者字符串，按照不同情况进行处理
++                if((typeof this.$data[key]) == 'object'){
++                    //因为类型检测中，数组和对象都会被判断为object,但是在这几个组件中我们所用到的数据没有对象类型
++                    //蓑衣当类型检测为object时，我们赋值为空数组
++                    this.$data[key] = [];
++                }else{
++                    //这里不需要判断了，因为在这几个组件中我们只用到了字符串类型和数组类型数据格式
++                    this.$data[key] = '';
++                }
++            }
++        },
++        //修改信息
+         postAxios(url,data){
+             //发送axios
+             axios.post(
+@@ -13,6 +29,7 @@
+                 data
+             )
+                 .then(res=>{
++                    this.clearData();
+                     //判断是否成功
+                     if(!res.data.code) {
+                         //根据oldPassword值判断哪些操作需要跳转
+Index: src/router/firstRoute.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/router/firstRoute.js b/src/router/firstRoute.js
+--- a/src/router/firstRoute.js	
++++ b/src/router/firstRoute.js	
+@@ -13,6 +13,7 @@
+     //商品详情页
+     {
+         path:'/shopInfo/:id',
++        name:'shopInfo',
+         component:()=> import('@/pages/shopInfo/shopInfo')
+     },
+     //用户信息管理
+@@ -57,9 +58,14 @@
+         component: ()=> import('@/pages/orders/myOrders'),
+         props: true
+     },
+-    //输入密码
++    //闪购钱包
+     {
+-        path: '/inputPassword',
+-        component: ()=> import('@/pages/buy/inputPassword')
++        path: '/wallet',
++        component:()=>import('@/pages/wallet/wallet')
++    },
++    //我的收藏
++    {
++        path: '/myCollect',
++        component:()=>import('@/pages/myCollect/myCollect')
+     }
+ ]
+\ No newline at end of file
+Index: src/store/buyCar.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/store/buyCar.js b/src/store/buyCar.js
+--- a/src/store/buyCar.js	
++++ b/src/store/buyCar.js	
+@@ -13,7 +13,7 @@
+                 'user/selectShops',
+             ).then(res=>{
+                 if(!res.data.code) return context.commit('GetBuyCarShop',res.data.results); //请求成功后，将返回的数据存在本地变量
+-                Toast(res.data.msg); //失败了就提示
++                if(res.data.code === 1) return  Toast(res.data.msg); //失败了就提示
+             })
+         }
+     },
+@@ -31,12 +31,18 @@
+         GetTotalPrice(state,val){
+             //修改数据
+             state.totalPrice = val;
++        },
++        //修改商品详情页点击结算时的商品数据
++        GetBuyShopInfo(state,val){
++            //修改数据  当结算成功或者退出结算时，将该数据改成空数组，当点击了某一个商品进行结算时，改变量保存该商品数据
++            state.buyShop = val;
+         }
+     },
+     state:{
+         buyCarShop:[],//用于保存所有购物车数据
+         shopsNum:0, //用于保存购物车数据条数
+         checkedShops:[],//用于保存已选中的购物车商品
++        buyShop:[],//保商品详情页点击结算时的商品数据
+         totalPrice:0,//用于保存已选中商品总价
+     }
+ }
+Index: src/App.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/App.vue b/src/App.vue
+--- a/src/App.vue	
++++ b/src/App.vue	
+@@ -1,6 +1,8 @@
+ <template>
+   <div id="app">
+-    <router-view></router-view>
++    <transition name="van-fade">
++      <router-view></router-view>
++    </transition>
+   </div>
+ </template>
+ 
+Index: src/pages/search/searchShop.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/search/searchShop.vue b/src/pages/search/searchShop.vue
+--- a/src/pages/search/searchShop.vue	
++++ b/src/pages/search/searchShop.vue	
+@@ -139,7 +139,7 @@
+   //商品展示区
+   .shopShow{
+     position: relative;
+-    top: 13.2%;
++    top: 13%;
+     overflow-y: scroll;
+     &::-webkit-scrollbar{
+       width: 0;
+Index: nodeApi/router/orders.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/nodeApi/router/orders.js b/nodeApi/router/orders.js
+--- a/nodeApi/router/orders.js	
++++ b/nodeApi/router/orders.js	
+@@ -12,5 +12,8 @@
+ //查询所有订单
+ router.get('/getOrders',handle.getOrders);
+ 
++//删除订单
++router.post('/deleteOrder',handle.deleteOrder);
++
+ //导出router
+ module.exports = router;
+Index: src/uitls/axios.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/uitls/axios.js b/src/uitls/axios.js
+--- a/src/uitls/axios.js	
++++ b/src/uitls/axios.js	
+@@ -1,8 +1,19 @@
+ import axios from "axios";
+ //axios配置对象
+-export default axios.create({
+-    baseURL:"http://10.20.25.15/",
+-    headers:{
+-        'Authorization': window.localStorage.getItem('token')
++axios.defaults.baseURL = "http://10.20.25.15/";
++
++//请求拦截器
++axios.interceptors.request.use(
++    //成功情况
++    config=>{
++        //验证token
++        config.headers['Authorization'] = window.localStorage.getItem('token');
++        return config;
++    },
++    //失败情况
++    error => {
++        return Promise.reject(error);
+     }
+-})
+\ No newline at end of file
++)
++
++export default axios;
+\ No newline at end of file
+Index: src/pages/orders/myOrders.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/pages/orders/myOrders.vue b/src/pages/orders/myOrders.vue
+--- a/src/pages/orders/myOrders.vue	
++++ b/src/pages/orders/myOrders.vue	
+@@ -13,10 +13,10 @@
+     </template>
+   </van-nav-bar>
+ <!-- 菜单导航 -->
+-  <van-tabs class="bar" v-model="active" @change="getRightOrders" animated swipeable sticky offset-top="9vw">
++  <van-tabs class="bar" v-model="active"  animated swipeable sticky offset-top="9vw">
+     <van-tab class="barContent" v-for="barName in barName" :key="barName" :title="barName" :swipeable="true">
+ <!--   空状态   -->
+-      <van-empty description="还没有订单呢！" v-if="!fliterOrders"/>
++      <van-empty description="还没有相应订单呢！" style="padding-top: 35%" v-if="!fliterOrders.length"/>
+ <!--  商品订单详情    -->
+       <div class="order">
+       <!--    单个订单    -->
+@@ -41,7 +41,7 @@
+             <div class="totalPrice">实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
+             <!--    待支付订单操作      -->
+             <div v-show="item.orderKind === '待支付'">
+-              <van-button plain type="primary" color="red" size="small" hairline round>删除订单</van-button>
++              <van-button plain type="primary" color="red" size="small" hairline round @click="deleteOrder(item.id)">删除订单</van-button>
+               <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round>立即支付</van-button>
+             </div>
+             <!--    待发货订单操作      -->
+@@ -65,8 +65,9 @@
+ </template>
+ 
+ <script>
+-import {NavBar,Tab, Icon, Tabs,Card,Tag,Button,Empty} from 'vant'
++import {NavBar, Tab, Dialog, Icon, Tabs, Card, Tag, Button, Empty, Toast} from 'vant'
+ import {mapState} from "vuex";
++import axios from "@/uitls/axios";
+ 
+ export default {
+   name: "myOrders",
+@@ -78,17 +79,24 @@
+     [Tag.name]:Tag,
+     [Card.name]:Card,
+     [Empty.name]:Empty,
++    [Toast.name]:Toast,
++    [Dialog.name]:Dialog,
+     [Button.name]:Button
+   },
+   data(){
+     return {
+       active:0,//用于绑定点击导航栏的索引
+       barName:['全部','待支付','待发货','待收货','待评价'],//用于保存导航栏标题
+-      fliterOrders:[],//用于储存商品
++      // fliterOrders:[],//用于储存商品
+     }
+   },
+   computed:{
+     ...mapState('orders',['orders']),//获取vuex中所有订单信息
++    //过滤符合要求的订单数据
++    fliterOrders(){
++      if(!this.active) return this.orders;//当切换到全部时将计算属性所有订单的值赋给orders
++      return this.orders.filter(val => val.orderKind === this.barName[this.active]);//当切换到其他导航栏时将过滤出计算属性对应值赋给orders
++    }
+   },
+   methods:{
+     //点击后退页面
+@@ -100,21 +108,35 @@
+     searchOrder(){
+       alert('待开发')
+     },
+-    //根据点击的标题获取订单信息 默认传参 name:索引 title:标题,
+-    getRightOrders(name,title){
+-      //过滤数据
+-      if(!name) return this.fliterOrders = this.orders;//当切换到全部时将计算属性所有订单的值赋给orders
+-      this.fliterOrders = this.orders.filter(val => val.orderKind === title);//当切换到全部时将过滤出计算属性对应值赋给orders
++    //删除订单 传参当前商品的id
++    deleteOrder(id){
++      //弹窗提示
++      Dialog.confirm({
++        title: '删除订单',
++        message: '是否删除当前订单信息?此操作无法恢复',
++      })
++          .then(() => {
++            // on confirm
++            axios.post(
++                'user/deleteOrder',
++                {id}
++            ).then(res=>{
++              if(!res.data.code){
++                this.$store.dispatch('orders/getOrders');//触发vuex订单模块数据更新
++                Toast.success(res.data.msg);//成功提醒
++              }else{
++                Toast.fail(res.data.msg);//失败提醒
++              }
++            }).catch(()=>Toast('服务器繁忙'));
++          })
++          .catch(() => {
++            // on cancel
++          });
+     }
+   },
+   mounted() {
+-    //当组件挂载时 根据用户在个人中心点击后的路由传参过滤相应的订单数据，
+-    if(this.$route.params.type){
+-        this.active = this.$route.params.index;
+-        //当点击全部进入时，显示全部订单
+-        if(this.$route.params.type === '全部') return this.fliterOrders = this.orders;
+-        this.fliterOrders = this.orders.filter(val => val.orderKind === this.$route.params.type);
+-    }
++    //当组件挂载时 将路由传递过来的索引赋值给本地变量，用于精准匹配订单导航栏以及订单数据
++    if(this.$route.params.index)  this.active = this.$route.params.index;
+   }
+ }
+ </script>
+Index: nodeApi/router_handle/orders_handle.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/nodeApi/router_handle/orders_handle.js b/nodeApi/router_handle/orders_handle.js
+--- a/nodeApi/router_handle/orders_handle.js	
++++ b/nodeApi/router_handle/orders_handle.js	
+@@ -4,10 +4,13 @@
+ 
+ //提交订单路由处理函数
+ exports.submitOrders = (req,res)=>{
++    // console.log(Object.keys(req.body[0]))
++    // console.log(Object.values(req.body[0]))
+     //定义sql
+-    const sql = 'insert into myorders set ?';
++    // const sql = `INSERT INTO myorders (orderNumber,totalPrice,name,orderAddress,tel,orderKind,orderTime,payKind,userName,shopId,num,price,font,promise,img,discount) VALUES ?`;
++    const sql = `insert into myorders set ?`;
+     //操作数据库
+-    db.query(sql,req.body,(err,results)=>{
++    db.query(sql,[...req.body],(err,results)=>{
+         //判断是否出错
+         if(err) return res.rep('服务器繁忙');
+         //判断是否成功
+@@ -32,4 +35,19 @@
+             results
+         })
+     })
++}
++
++//根据id删除订单
++exports.deleteOrder = (req,res)=>{
++    //定义sql
++    const sql = 'delete from myorders where id = ? and userName = ?';
++    //操作数据库
++    db.query(sql,[req.body.id,req.user.userName],(err,results)=>{
++        //失误
++        if (err) return res.rep('删除失败');
++        //删除失败
++        if (results.affectedRows === 0) return res.rep('删除失败');
++        //成功返回
++        res.rep('删除成功',0);
++    })
+ }
+\ No newline at end of file

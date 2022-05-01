@@ -10,13 +10,13 @@
       @click-right="loginOut"
   />
   <van-cell-group style="margin: 6% 0">
-    <van-cell icon="user-o" is-link title="用户头像修改" size="large" @click="isShow('用户头像修改')" />
-    <van-cell icon="edit" is-link title="用户昵称修改" size="large" @click="isShow('用户昵称修改')" />
-    <van-cell icon="closed-eye" is-link title="用户密码修改" size="large" @click="isShow('用户密码修改')" />
-    <van-cell icon="records" is-link title="修改所有信息" size="large" @click="isShow('修改所有信息')" />
-    <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow('注销账号')" />
+    <van-cell icon="user-o" is-link title="用户头像修改" size="large" @click="isShow" />
+    <van-cell icon="edit" is-link title="用户昵称修改" size="large" @click="isShow" />
+    <van-cell icon="closed-eye" is-link title="用户密码修改" size="large" @click="isShow" />
+    <van-cell icon="records" is-link title="修改所有信息" size="large" @click="isShow" />
+    <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow" />
   </van-cell-group>
-  <van-action-sheet v-model="show" :title="title">
+  <van-action-sheet v-model="show" :title="title" :closeable="false">
     <updateUserImg v-show="title === '用户头像修改'"/>
     <updatePassword v-show="title === '用户密码修改'"/>
     <updateName v-show="title === '用户昵称修改'"/>
@@ -83,9 +83,9 @@ export default {
           }).catch(()=>{})
     },
     //是否显示  传参操作类型
-    isShow(title){
+    isShow(event){
       //根据操作类型  定义标题内容
-      this.title = title;
+      this.title = event.target.innerText;
       //取反
       this.show = !this.show;
     }

@@ -2,7 +2,8 @@
 <div id="submitOrders">
 <!-- 导航栏 -->
   <van-nav-bar
-      left-text="确认订单"
+      left-text="返回"
+      title="确认订单"
       left-arrow
       @click-left="goBack"
   />
@@ -39,16 +40,47 @@
 <!-- 订单提交 -->
   <van-submit-bar :price="shopsTotalPrice" button-text="提交订单" @submit="submitOrders" />
 <!-- 弹出  支付方式 -->
-  <van-action-sheet v-model="show"  :close-on-click-action="true" cancel-text="取消支付" @cancel="cancelPay">
+  <van-action-sheet v-model="show"  :close-on-click-action="true">
     <div class="content" @click="payFor"><van-icon name="wechat-pay" color="green" size="19px"/>微信支付</div>
     <div class="content" @click="payFor"><van-icon name="alipay" color="blue" size="19px"/>支付宝支付</div>
     <div class="content" @click="payFor"><van-icon name="shopping-cart" color="red" size="19px"/>闪购钱包支付</div>
   </van-action-sheet>
+<!-- 弹出支付密码输入框 -->
+  <van-popup v-model="passwordShow" position="bottom" style="height: 300px" @click-overlay="cancelPay">
+    <div>
+      <!-- 密码输入框 -->
+      <van-password-input
+          :error-info="errorInfo"
+          :value="payPassword"
+          :focused="showKeyboard"
+          @focus="showKeyboard = true"
+      />
+      <!-- 数字键盘 -->
+      <van-number-keyboard
+          v-model="payPassword"
+          :show="showKeyboard"
+          @blur="showKeyboard = false"
+          random-key-order
+      />
+    </div>
+  </van-popup>
 </div>
 </template>
 
 <script>
-import {NavBar, AddressList, Icon, Card, Tag, SubmitBar, ActionSheet, Toast} from 'vant'
+import {
+  NavBar,
+  AddressList,
+  Icon,
+  Card,
+  Tag,
+  SubmitBar,
+  ActionSheet,
+  Toast,
+  Popup,
+  PasswordInput,
+  NumberKeyboard
+} from 'vant'
 //导入axios配置对象
 import axios from '../../uitls/axios';
 import {mapState} from 'vuex';
@@ -61,6 +93,9 @@ export default {
     [Icon.name]:Icon,
     [Toast.name]:Toast,
     [NavBar.name]:NavBar,
+    [Popup.name]:Popup,
+    [PasswordInput.name]:PasswordInput,
+    [NumberKeyboard.name]:NumberKeyboard,
     [ActionSheet.name]:ActionSheet,
     [SubmitBar.name]:SubmitBar,
     [AddressList.name]:AddressList
@@ -68,17 +103,45 @@ export default {
   data(){
     return {
       show:false,//控制弹出层显示
+      passwordShow:false,//控制密码输入框
       address:{},//收货地址
       shops:[],//保存结算商品信息
+      payKind:'',//支付方式
+      payPassword: '',//支付密码
+      errorInfo:'',//密码错误提示
+      showKeyboard: true,//是否显示密码弹出层
       shopsTotalPrice:0.00,//保存待结算商品所有价格
     }
   },
   computed:{
-    ...mapState('buyCar',["checkedShops",'totalPrice']),
+    ...mapState('buyCar',["checkedShops",'totalPrice','buyShop']),
+  },
+  watch:{
+    //监视密码输入框value值变化，当value值长度为6时发送请求验证密码
+    payPassword(newVal){
+      if(newVal.length === 6){
+        //密码正确  隐藏密码输入框
+        this.passwordShow = false;
+        this.payPassword = '';//清空输入框
+        //支付动画
+        Toast.loading({
+          message: '支付中...',
+          forbidClick: true,
+        });
+        //发送请求验证支付密码
+        this.axiosForOrders('待发货',this.payKind,'支付成功');
+      }
+    }
   },
   methods:{
     goBack(){
-      this.$router.replace({name:'buyCar'});//点击返回购物车
+      //当从商品详情页进入本页面时，点击导航栏时跳转回商品详情页，并携带当前商品的id
+      if(this.buyShop.length !== 0){
+        this.$router.replace(`/shopInfo/${this.shops[0].shopId}`);
+      }else{
+        //当从购物车进入本页面时，点击导航栏时跳转到购物车
+        this.$router.replace({name:'buyCar'});//点击返回购物车
+      }
     },
     //选择、编辑收货地址
     checkAddress(){
@@ -117,6 +180,7 @@ export default {
           '/user/submitOrders',
           this.expressData(orderKind,payKind)
       ).then(res=>{
+        //判断是否支付成功
         if(res.data.code){
           Toast.fail(res.data.msg);//提交失败提示
         }else{
@@ -126,35 +190,38 @@ export default {
             this.$store.dispatch('orders/getOrders');//触发vuex更新订单数据
             this.$router.replace({name:'buyCar'});//跳转购物车页面
            clearTimeout(timeout); //清除定时器
-          },2000)
+          },1000)
         }
       }).catch(()=>{Toast.fail('服务器繁忙')})
     },
     //支付选项点击事件，通过event对象获取点击项的文本内容
-    /*payFor(event){
-      Toast.loading({
-        message: '支付中...',
-        forbidClick: true,
-      });
-      this.axiosForOrders('待发货',event.target.innerText,'支付成功');
-    },*/
-    payFor(){
-      this.$router.push('/inputPassword')
+    payFor(event){
+      this.show = false;//隐藏支付方式框
+      this.passwordShow = true;//显示密码输入框
+      this.payKind = event.target.innerText;//将点击的支付方式保存到变量
     },
     //点击取消按钮处理函数
     cancelPay(){
       //发送请求，将本次结算的所有商品列为待支付，且跳转我的界面(replace)
       Toast.loading({
-        message: '取消中...',
+        message: '正在取消支付...',
         forbidClick: true,
       });
-      this.axiosForOrders('待支付','未支付','已取消');
+      this.axiosForOrders('待支付','未支付','已取消支付');
     }
   },
+  //路由生命周期
+  beforeRouteLeave(to,from,next){
+    if (to.name === 'shopInfo'){
+      //假如是从商品结算页进入本页面时，无论是否支付，都清空vuex中单个商品结算的商品数据
+      this.$store.commit('buyCar/GetBuyShopInfo',[]);
+    }
+    next();
+  },
   mounted() {
-    //判断路由是否有参数传递，若没有就使用计算属性内商品数据
-    if(this.$route.params.shops){
-      this.shops = this.$route.params.shops;
+    //判断vuex单个商品结算模块是否有数据，若没有就使用计算属性内购物车已选中商品数据
+    if(this.buyShop.length){
+      this.shops = this.buyShop;
       this.shopsTotalPrice = (this.shops[0].price)*100;
     } else{
       this.shops = this.checkedShops;
@@ -173,7 +240,6 @@ export default {
       }
       Toast(res.data.msg); //失败提示
     }).catch(()=>{Toast('服务器繁忙')});
-    // console.log(this.shops)
   }
 }
 </script>

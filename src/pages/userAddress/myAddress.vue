@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       chosenAddressId: '',
+      checkAddress:{},//选中的地址
       list: [],//用于保存用户的收货地址
     };
   },
@@ -50,12 +51,21 @@ export default {
     },
     //组件自带  选中切换事件，默认传参，item:当前选中项的地址对象,index:当前选中项索引
     select(item){
+      this.checkAddress = item; // 将选中的地址赋值给本地
       //切换选中地址触发  更改选中状态  根据路由传参执行操作，如果该值为未定义就不执行
-      if(this.$route.params.type){
+      // if(this.$route){
         //跳转商品结算页面，并将点击的该项地址传过去
-        this.$router.replace({name:'submitOrders',params:{address:item}})
-      }
+        // this.$router.replace({name:'submitOrders',params:{address:item}})
+      // }
     }
+  },
+  //路由生命周期  离开
+  beforeRouteLeave(to,from,next){
+    //当目标路由为提交订单时，且当前address不为空对象时，携带当前选中的参数
+    if(to.name === 'submitOrders' && Object.keys(this.checkAddress).length){
+        to.params.address = this.checkAddress;
+    }
+    next();//放行
   },
   mounted() {
     //将数据库的地址数据保存到list

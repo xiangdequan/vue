@@ -139,7 +139,7 @@ export default {
   //商品展示区
   .shopShow{
     position: relative;
-    top: 13.2%;
+    top: 13%;
     overflow-y: scroll;
     &::-webkit-scrollbar{
       width: 0;
