@@ -24,9 +24,16 @@ export default {
         GetOrders(state,val){
             //修改vuex中订单数据，orders
             state.orders = val;
-        }
+        },
+        //重新支付的订单数据
+        rePayOrder(state,val){
+            state.rePayOrder = val;//将传递的值储存下来
+        },
+        //重新支付时，储存编辑好的地址
+
     },
     state:{
         orders:[],//保存所有订单
+        rePayOrder:{},//用于保存重新支付的订单数据
     }
 }

@@ -17,8 +17,6 @@
 <!-- 商品长图展示 -->
   <div class="longImg">
     <img :src="shopInfo.img">
-    <img :src="shopInfo.img">
-    <img :src="shopInfo.img">
   </div>
 <!-- 底部菜单 -->
   <van-goods-action>
@@ -58,7 +56,6 @@ export default {
       this.$router.back();
     },
     addBuyCar(){
-      this.show = true
       //将当前商品id传给后台
       axios.post(
           'user/addBuyCar',

@@ -38,11 +38,11 @@
           <!--    操作    -->
           <div class="control">
             <!--     商品总价     -->
-            <div class="totalPrice">实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
+            <div class="totalPrice"><b>({{item.orderKind}})</b>实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
             <!--    待支付订单操作      -->
             <div v-show="item.orderKind === '待支付'">
               <van-button plain type="primary" color="red" size="small" hairline round @click="deleteOrder(item.id)">删除订单</van-button>
-              <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round>立即支付</van-button>
+              <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round @click="payFor(item)">立即支付</van-button>
             </div>
             <!--    待发货订单操作      -->
             <div v-show="item.orderKind === '待发货'">
@@ -108,6 +108,12 @@ export default {
     searchOrder(){
       alert('待开发')
     },
+    //支付  触发vuex订单模块重新支付订单数据  传参item,当前点击项
+    payFor(item){
+      this.$store.commit('orders/rePayOrder',item)
+      //跳转结算页面
+      this.$router.push('/submitOrders');
+    },
     //删除订单 传参当前商品的id
     deleteOrder(id){
       //弹窗提示
@@ -135,6 +141,8 @@ export default {
     }
   },
   mounted() {
+    //触发vuex中订单管理模块数据更新
+    this.$store.dispatch('orders/getOrders');
     //当组件挂载时 将路由传递过来的索引赋值给本地变量，用于精准匹配订单导航栏以及订单数据
     if(this.$route.params.index)  this.active = this.$route.params.index;
   }
@@ -197,6 +205,14 @@ export default {
               font-size: 13px;
               color: #727272;
               border: 1px solid #f6f6f6;
+
+              //订单类型
+              b{
+                float: left;
+                color: red;
+                margin-left: 9%;
+                font-size: 12px;
+              }
 
               //人民币标识
               a {

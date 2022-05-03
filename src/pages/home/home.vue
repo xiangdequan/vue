@@ -1,47 +1,43 @@
 <template>
 <div id="home">
 <!--顶部搜索栏-->
-<search />
-<!--  顶部导航栏-->
-<!--  <van-tabs title-active-color="red" @change="searchByTitle" swipeable animated>-->
-<!--    <van-tab v-for="(val,index) in kinds" :title="val" :key="index">-->
-<!--    </van-tab>-->
-<!--  </van-tabs>-->
-  <!-- 轮播     -->
-  <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white" >
-    <van-swipe-item v-for="item in shops" :key="item.id" @click="goShopInfo(item.id)"><img :src="item.img" ></van-swipe-item>
-  </van-swipe>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功">
-    <!--   商品导航     -->
-    <van-grid :border="false" :column-num="6">
-      <van-grid-item v-for="item in 12" :key="item" class="grid-shops-banr">
-        <img src="../../assets/th.jpg" />
-        <span>待开发</span>
-      </van-grid-item>
-    </van-grid>
-    <!-- 商品展示区   需要传数据  标签的宽度   //当商品为推荐时，展示所有商品-->
-    <shops :shops="shops"/>
-  </van-pull-refresh>
+  <search />
+  <div class="content">
+    <!-- 轮播     -->
+    <van-swipe class="my-swipe" :autoplay="2000" indicator-color="white" :show-indicators="false" v-if="allShops.length">
+      <van-swipe-item v-for="item in allShops" :key="item.id" @click="goShopInfo(item.id)">
+        <img :src="item.img"/>
+      </van-swipe-item>
+    </van-swipe>
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功">
+      <!--   商品导航     -->
+      <van-grid :border="false" :column-num="6">
+        <van-grid-item v-for="item in 12" :key="item" class="grid-shops-banr">
+          <img src="../../assets/logo.png" />
+          <span>待开发</span>
+        </van-grid-item>
+      </van-grid>
+      <!-- 商品展示区   需要传数据  标签的宽度   //当商品为推荐时，展示所有商品-->
+      <shops :shops="allShops"/>
+    </van-pull-refresh>
+  </div>
 </div>
 </template>
 
 <script>
 //导入vant组件
-import {Toast,PullRefresh,Tab,Tabs,Grid, GridItem,Swipe,SwipeItem} from "vant";
+import {Toast,PullRefresh,Grid, GridItem,Swipe,SwipeItem} from "vant";
 //导入搜索框
 import search from "@/components/search";
 import shops from "@/components/shops";
-//导入混合
-import mixin from "@/mixin/mixin";
+import showAction from "@/mixin/showAction";
+import {mapState} from "vuex";
 
 export default {
   name: "home",
-  mixins:[mixin], //注册混合用于处理商品信息分类展示
   components:{
     [Toast.name]:Toast,
     [PullRefresh.name]:PullRefresh,
-    [Tab.name]:Tab,
-    [Tabs.name]:Tabs,
     [Grid.name]:Grid,
     [Swipe.name]:Swipe,
     [SwipeItem.name]:SwipeItem,
@@ -49,12 +45,16 @@ export default {
     search,
     shops
   },
+  mixins:[showAction],//混合，用于在商品数据还未加载完成时显示动画
   data() {
     return {
       //记录刷新次数 每刷新一次为1 表示成功 然后重新归0
       count: 0,
       isLoading: false,
     }
+  },
+  computed:{
+    ...mapState('allShops',['allShops'])
   },
   methods:{
     //下拉刷新 axios更新
@@ -76,77 +76,79 @@ export default {
   height: 100%;
   background-color: #F8F9F9;
 
-  //轮播
-  .my-swipe .van-swipe-item {
-    height: 30%;
+  .content{
     position: relative;
     top: 6%;
-    color: #fff;
-
-    img{
-      height: 50%;
-      width: 100%;
-      border-radius: 10px;
-    }
-  }
-  //顶部导航栏内容样式
-  .van-pull-refresh{
-    width: 100%;
+    height: 88%;
     overflow-y: scroll;
-
     //去除滚动条样式
-    &::-webkit-scrollbar{
+    &::-webkit-scrollbar {
       width: 0;
     }
 
-    //定义混合用于控制span样式
-    .span(){
-      display: inline-block;
-      margin-top: 2px;
-    }
+    //轮播
+    .my-swipe{
+      height: 43%;
 
-    //商品导航栏样式
-    .van-grid{
-      margin: 5px 0 10px;
-      //项目样式
-      .grid-shops-banr{
-        height: 65px;
+      .van-swipe-item{
+        color: #fff;
 
-        //图片样式
         img{
-          height: 30px;
-          width: 30px;
-        }
-
-        span{
-          height: 12px;
-          font-size: 12px;
-          //调用混合
-          .span();
+          height: 100%;
+          width: 100%;
+          border-radius: 10px;
         }
       }
     }
-    //商品展示区
-    .grid-shops{
+      //定义混合用于控制span样式
+      .span() {
+        display: inline-block;
+        margin-top: 2px;
+      }
 
-      .van-grid-item{
-        padding-top: 0 !important;
-      }
-      //项目样式
-      .grid-shops-show{
-        height: 240px !important;
-        border: 1px solid red;
-        //图片样式
-        .van-image{
-          height: 86%;
+      //商品导航栏样式
+      .van-grid {
+        margin: 5px 0 10px;
+        //项目样式
+        .grid-shops-banr {
+          height: 65px;
+
+          //图片样式
+          img {
+            height: 30px;
+            width: 30px;
+          }
+
+          span {
+            height: 12px;
+            font-size: 12px;
+            //调用混合
+            .span();
+          }
         }
-        span{
-          .span();
-        }
       }
+
+      //商品展示区
+      .grid-shops {
+
+        .van-grid-item {
+          padding-top: 0 !important;
+        }
+
+        //项目样式
+        .grid-shops-show {
+          height: 240px !important;
+          border: 1px solid red;
+          //图片样式
+          .van-image {
+            height: 86%;
+          }
+
+          span {
+            .span();
+          }
+        }
     }
-
-
   }
 }
 </style>

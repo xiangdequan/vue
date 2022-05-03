@@ -11,9 +11,10 @@
     <div class="shopBar">
 <!--  商品展示  //当商品为推荐时，展示所有商品    -->
         <shops
-            width="36%"
+            width="37%"
             fontSize="12px"
             spanSize="12px"
+            PromiseSize="11px"
             aSize="15px"
             class="shop"
             :shops="shops"
@@ -31,20 +32,39 @@ import { Sidebar, SidebarItem} from 'vant';
 import Shops from "@/components/shops";
 import Search from "../../components/search";
 //导入混合
-import mixin from "@/mixin/mixin";
+import {mapState} from "vuex";
+import showAction from "@/mixin/showAction";
 
 export default {
   name: "kind",
-  mixins:[mixin], //注册混合用于处理商品信息分类展示
   components:{
     Shops,
     Search,
     [Sidebar.name]:Sidebar,
     [SidebarItem.name]:SidebarItem,
   },
+  mixins:[showAction],//混合，用于在商品数据还未加载完成时显示动画
   data(){
     return {
       activeKey:0, //用于存储点击索引
+      title:'推荐', //用于储存点击的导航栏标题
+      //定义导航栏标题
+      kinds:["推荐","食品","手机","水果","鞋包","男装","百货","女装","电器","医药","电脑","美妆","家纺","运动","车品","玩乐"],
+    }
+  },
+  computed:{
+    //储存所有商品数据
+    ...mapState('allShops',['allShops']),
+    shops(){
+      if(this.title === '推荐') return this.allShops;
+      return this.allShops.filter(val => val.kind === this.title);
+    }
+  },
+  methods:{
+    //导航栏点击事件  组件默认传参name:索引,title:文本
+    searchByTitle(name) {
+      //根据索引匹配标签名，从而筛选对应数据
+      this.title = this.kinds[name];
     }
   }
 }
@@ -89,15 +109,6 @@ export default {
 
       &::-webkit-scrollbar{
         width: 0;
-      }
-      //轮播
-      .my-swipe .van-swipe-item {
-        color: #fff;
-
-        img{
-          width: 100%;
-          border-radius: 10px;
-        }
       }
 
       //shop样式

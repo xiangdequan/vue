@@ -46,42 +46,32 @@ exports.updateName = (req,res)=>{
     })
 }
 
-//更改密码路由处理函数
+//更改支付密码、账户密码路由处理函数
 exports.updatePsw = (req,res)=>{
-    //定义sql语句查询该用户密码  通过用户保存的token查询,通过添加限制条件判断密码是否正确
-    const sqlOne = "select * from users where userName =? and password=?";
-    //查询
-    db.query(sqlOne,[req.user.userName,req.body.oldPassword],(err,results)=>{
+    let type = 'password';//用于储存当前操作类型，默认为修改登录密码
+    let data = []; //储存上传数据库的数据
+    //根据操作类型给data赋相应值
+    if(res.type === 'payword'){
+        type = 'payword';
+        data = [req.body.newPayword,req.user.userName];
+    }else{
+        data = [req.body.newPassword,req.user.userName];
+    }
+    //定义sql语句用来修改密码
+    const sqlTwo = `update users set ${type}=? where userName=?`;
+    //修改密码
+    db.query(sqlTwo,data,(err,results)=>{
         //判断是否出错
-        if(err) return res.rep("出错了，请稍后重试");
-        //判断是否查询到该条数据
-        if(results.length === 0) return res.rep("修改失败,原密码输入不正确！");
-        //到这步了用户是存在的,接下来进行修改密码部分
-        //定义sql语句用来修改密码
-        const sqlTwo = "update users set password=? where userName=?";
-        //修改密码
-        db.query(sqlTwo,[req.body.newPassword,req.user.userName],(err,results)=>{
-            //判断是否出错
-            if(err) return res.rep("修改密码失败,请稍后重试");
-            //判断是否修改成功
-            if(results.affectedRows === 0) return res.rep("修改密码失败!");
-            //提示修改成功
-            res.rep("修改密码成功!",0)
-        })
+        if(err) return res.rep("修改密码失败,请稍后重试");
+        //判断是否修改成功
+        if(results.affectedRows === 0) return res.rep("修改密码失败!");
+        //提示修改成功
+        res.rep("修改密码成功!",0)
     })
 }
 
 //修改用户所有信息api  需要通过token验证是否过期，用户旧密码是否正确
 exports.updateAll = (req,res)=>{
-    /*//定义sql  验证密码是否正确
-    const sqlOne = 'select * from users where userName = ? and password = ?';
-    //验证密码
-    db.query(sqlOne,[req.user.userName,req.body.oldPassword],(err,results)=>{
-        //是否出错
-        if (err) return res.rep('服务器繁忙');
-        //判断是否查询到结果
-        if(results.length === 0) return res.rep('原密码错误,修改失败!');
-        //到这步就没问题了，可以进行修改操作*/
         //定义sql
         const sql = 'update users set password=?,info=?,userImg=? where userName=?';
         //修改密码、头像、昵称
@@ -94,6 +84,12 @@ exports.updateAll = (req,res)=>{
             res.rep('修改成功',0);
         })
     // })
+}
+
+//验证支付密码处理函数
+exports.checkPayword = (req,res)=>{
+    //前面中间件已经验证过了，到这就表示成功，现在只需要返回数据
+    res.rep('支付密码正确',0);
 }
 
 //注销用户api

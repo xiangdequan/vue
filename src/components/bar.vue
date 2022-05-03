@@ -30,7 +30,6 @@ export default {
   computed:{
     ...mapState('orders',['orders']),//获取所有订单数量
     mineBadge(){ //我的-导航角标
-      console.log(this.orders)
       let num = this.orders.length;
       return num ? num : '';
     }

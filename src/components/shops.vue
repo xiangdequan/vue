@@ -8,14 +8,14 @@ shops:展示的商品(数组)
 <template>
 <!-- 商品展示组件 -->
 <div id="shops">
-<!--  只有未找到相关结果才显示-->
-  <van-empty image="search" description="未找到相关商品" v-if="shops.length <= 0"/>
+<!--&lt;!&ndash;  只有未找到相关结果才显示&ndash;&gt;
+  <van-empty image="search" description="未找到相关商品" v-if="shops.length <= 0"/>-->
   <!-- 商品项 根据父组件传过来的数据动态渲染 商品图片、商品描述 通过id获取商品的详情页-->
   <div class="shops-item" v-for="item in shops" :key="item.id" @click="getMore(item.id)">
     <!--  :src="item.url" 374px -->
     <img :src="item.img"/>
     <span :style="{fontSize:spanSize}">{{item.font}}</span>
-    <span :style="{fontSize:spanSize}">{{item.promise}}</span>
+    <span :style="{fontSize:PromiseSize}">{{item.promise}}</span>
     <span>
       <van-tag type="danger" :style="{width:width,fontSize:fontSize}">{{item.discount}}</van-tag>
       <a :style="{fontSize:aSize}">￥{{item.price}}</a>
@@ -25,8 +25,8 @@ shops:展示的商品(数组)
 </template>
 
 <script>
-//引入vant
-import {Tag,Empty} from 'vant';
+//引入vant ,Empty
+import {Tag} from 'vant';
 
 export default {
   name: "shops",
@@ -35,13 +35,16 @@ export default {
     shops:{
       type:Array //商品信息
     },
+    spanSize:{
+      type:String //商品描述字体大小
+    },
     width:{  //标签宽度
       type:String
     },
     fontSize:{  //标签字体大小
       type:String
     },
-    spanSize:{  // span字体大小
+    PromiseSize:{  // span字体大小
       type:String
     },
     aSize:{ //a标签字体大小，价格
@@ -50,7 +53,7 @@ export default {
   },
   components:{
     [Tag.name]:Tag,
-    [Empty.name]:Empty
+    // [Empty.name]:Empty
   },
   data(){
     return {
@@ -72,6 +75,7 @@ export default {
 #shops{
   display: flex;
   flex-wrap: wrap;
+  padding-bottom: 5px;
   align-items: center;
 
   //只有未找到相关结果才显示
@@ -129,6 +133,7 @@ export default {
       // 标签宽度默认
       .van-tag{
         width: 34%;
+        border-radius: 15px;
         font-size: 14px;
       }
       a{
