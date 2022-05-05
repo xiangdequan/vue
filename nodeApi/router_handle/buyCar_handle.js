@@ -70,7 +70,6 @@ exports.updateNum = (req,res)=>{
 exports.addBuyCar = (req,res)=>{
     //先查询是否加入过购物车，加入过就增加数量
     const sqlOne = 'select * from buycar where shopId = ? and userName = ?';
-    console.log(req.body)
     //操作数据库
     db.query(sqlOne,[req.body.shopId,req.user.userName],(err,results)=>{
         //判断是否出错
