@@ -11,13 +11,9 @@
 </template>
 
 <script>
-import {NavBar} from 'vant';
 
 export default {
   name: "topBar",
-  components:{
-    [NavBar.name]:NavBar
-  },
   props:['title'],
   methods:{
     //返回上一页

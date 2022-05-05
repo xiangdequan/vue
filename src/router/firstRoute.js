@@ -58,6 +58,13 @@ export default [
         component: ()=> import('@/pages/orders/myOrders'),
         props: true
     },
+    //订单详情
+    {
+        path: '/orderInfo',
+        name:'orderInfo',
+        component: ()=> import('@/pages/orders/orderInfo/orderInfo'),
+        props: true
+    },
     //闪购钱包
     {
         path: '/wallet',

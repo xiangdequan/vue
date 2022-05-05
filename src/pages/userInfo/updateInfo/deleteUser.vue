@@ -12,15 +12,10 @@
 </template>
 
 <script>
-import {Field, Button,Toast,Dialog} from "vant";
 import updateInfo from "@/mixin/updateInfo";
 
 export default {
   name: "deleteUser",
-  components:{
-    [Field.name]:Field,
-    [Button.name]:Button,
-  },
   mixins:[updateInfo],
   data(){
     return {
@@ -31,9 +26,9 @@ export default {
     //用户注销
    deleteUser(){
       //判断是否输入内容
-      if(this.oldPassword.length < 6 || this.oldPassword.length > 12) return Toast('密码不合法(无空格6~12位)');
+      if(this.oldPassword.length < 6 || this.oldPassword.length > 12) return this.$toast('密码不合法(无空格6~12位)');
      //弹窗提示
-     Dialog.confirm({
+     this.$dialog.confirm({
        title: '注销账号',
        message: '此操作将清空您在闪购平台的所有数据,且无法恢复,请谨慎操作!',
      })

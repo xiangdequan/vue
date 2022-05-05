@@ -66,6 +66,13 @@ export default {
       //根据索引匹配标签名，从而筛选对应数据
       this.title = this.kinds[name];
     }
+  },
+  beforeMount() {
+    //通过实例方法$watch方法开启监听，回调函数、配置为混合中的，当监听的属性变化时显示加载动画
+    this.$watch('allShops',this.watchCallback,this.isDeep)
+  },
+  mounted() {
+    this.showToast(this.allShops.length);//调用混合中定义的方法，用于判断是否需要加载动画
   }
 }
 </script>

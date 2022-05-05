@@ -1,3 +1,6 @@
+//导入vue
+import Vue from 'vue';
+//导入router插件
 import vueRouter from "vue-router";
 //引入前置路由守卫处理函数
 import isLogin from "@/router/beforeEach";
@@ -6,6 +9,8 @@ import firstRoute from "@/router/firstRoute";
 //导入视图路由
 import viewRoute from "@/router/viewRoute";
 
+//注册
+Vue.use(vueRouter);
 //导出router对象
 const router = new vueRouter({
     //mode配置项表示使用哪种方案 history或hash

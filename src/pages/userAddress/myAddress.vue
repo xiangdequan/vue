@@ -19,19 +19,13 @@
 </template>
 
 <script>
-import {AddressList, Toast,Empty} from 'vant'
 //导入顶部导航组件
 import topBar from "@/pages/userAddress/topBar";
-//导入axios配置对象
-import axios from '../../uitls/axios';
 
 export default {
   name: "myAdress",
   components:{
     topBar,
-    [AddressList.name]:AddressList,
-    [Toast.name]:Toast,
-    [Empty.name]:Empty
   },
   data() {
     return {
@@ -69,7 +63,7 @@ export default {
   },
   mounted() {
     //将数据库的地址数据保存到list
-    axios.get(
+    this.$axios.get(
         'user/myAddress'
     ).then(res=>{
       if (!res.data.code){
@@ -83,9 +77,9 @@ export default {
           }
         })
       }else{
-        Toast(res.data.msg); //失败提示
+        this.$toast(res.data.msg); //失败提示
       }
-    }).catch(()=>{Toast('服务器繁忙')})
+    }).catch(()=>{this.$toast('服务器繁忙')})
   }
 }
 </script>

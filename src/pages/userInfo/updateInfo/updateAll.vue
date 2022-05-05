@@ -27,17 +27,10 @@
 </template>
 
 <script>
-import {Field,Button,Toast,Uploader} from "vant";
 import updateInfo from "@/mixin/updateInfo";
 
 export default {
   name: "updateAll",
-  components: {
-    [Field.name]: Field,
-    [Button.name]: Button,
-    [Uploader.name]:Uploader,
-    [Toast.name]: Toast
-  },
   mixins:[updateInfo], //注册混合
   data() {
     return {
@@ -61,10 +54,10 @@ export default {
       let info = this.info;
       let userImg = this.file;
       //判断用户内容是否输入合法
-      if (oldPassword.length < 6 || oldPassword.length > 12) return Toast('旧密码不合法(无空格6~12位)');
-      if (newPassword.length < 6 || newPassword.length > 12) return Toast('新密码不合法(无空格6~12位)');
-      if(info.length < 3 || info.length > 6) return Toast('新昵称不合法(无空格3~6位)');
-      if(userImg.length === 0) return Toast('请上传新头像');
+      if (oldPassword.length < 6 || oldPassword.length > 12) return this.$toast('旧密码不合法(无空格6~12位)');
+      if (newPassword.length < 6 || newPassword.length > 12) return this.$toast('新密码不合法(无空格6~12位)');
+      if(info.length < 3 || info.length > 6) return this.$toast('新昵称不合法(无空格3~6位)');
+      if(userImg.length === 0) return this.$toast('请上传新头像');
       //没问题发送请求 混合内封装的方法
       this.postAxios('updateAll',{oldPassword,newPassword,info,userImg});
     }

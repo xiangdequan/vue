@@ -2,7 +2,6 @@
 
 //导入axios配置对象
 import axios from '../uitls/axios';
-import {Toast} from "vant";
 
 const updateInfo = {
     methods:{
@@ -35,20 +34,20 @@ const updateInfo = {
                         //根据oldPassword值判断哪些操作需要跳转
                         if(this.oldPassword !== undefined) this.$router.replace('/login');
                         //提示
-                        Toast(res.data.msg);
+                        this.$toast(res.data.msg);
                         //判断是否是token问题导致失败
                     }else if(res.data.code === 2){
                         //提示
-                        Toast('登陆过期,请重新登录!');
+                        this.$toast('登陆过期,请重新登录!');
                         //跳转登录
                         this.$router.replace('/login');
                     }else{
                         //表示操作失败
                         this.isOk = false;
                         //不是失败token问题导致
-                        Toast(res.data.msg);
+                        this.$toast(res.data.msg);
                     }
-                }).catch(()=>Toast('服务器繁忙！'))
+                }).catch(()=>this.$toast('服务器繁忙！'))
         }
     }
 }

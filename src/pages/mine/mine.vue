@@ -58,17 +58,12 @@
 
 <script>
 //导入cant
-import { Icon,Grid,GridItem,Collapse, CollapseItem } from 'vant';
-//导入axios配置对象
-import axios from '../../uitls/axios';
+import { Collapse, CollapseItem } from 'vant';
 import {mapState} from "vuex";
 
 export default {
   name: "mine",
   components:{
-    [Icon.name]:Icon,
-    [Grid.name]:Grid,
-    [GridItem.name]:GridItem,
     [Collapse.name]:Collapse,
     [CollapseItem.name]:CollapseItem
   },
@@ -120,12 +115,12 @@ export default {
           router.push('/myCollect');
           break;
         case '官方热线':
-          alert("客服电话:111111");
+          this.$toast("客服电话:111111");
           break;
         case "在线客服" :
-          alert("开发中");
+          this.$toast("开发中");
           break;
-        default: alert('错误!');
+        default: this.$toast.fail('错误!');
       }
     },
     //点击设置跳转修改用户信息页面
@@ -137,7 +132,7 @@ export default {
   //绑定前获取用户信息
   mounted() {
     //发送请求验证token
-    axios.get(
+    this.$axios.get(
         'user/info',
     ).then(res=>{
       if(!res.data.code){

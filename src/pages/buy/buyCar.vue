@@ -52,26 +52,17 @@
 </template>
 
 <script>
-import {SwipeCell,CheckboxGroup,Empty,SubmitBar,Checkbox,Stepper,Card,Button,Toast,Tag,NavBar,Dialog} from 'vant'
-//导入axios配置对象
-import axios from '../../uitls/axios';
+import {SwipeCell,CheckboxGroup,Checkbox,Stepper} from 'vant'
+
 import {mapState,mapActions} from "vuex";
 
 export default {
   name: "buy",
   components:{
-    [Tag.name]:Tag,
-    [Empty.name]:Empty,
-    [Button.name]:Button,
-    [SubmitBar.name]:SubmitBar,
     [Checkbox.name]:Checkbox,
-    [Dialog.name]:Dialog,
-    [NavBar.name]:NavBar,
     [CheckboxGroup.name]:CheckboxGroup,
     [SwipeCell.name]:SwipeCell,
     [Stepper.name]:Stepper,
-    [Toast.name]:Toast,
-    [Card.name]:Card
   },
   data(){
     return {
@@ -119,10 +110,10 @@ export default {
     clearAll(){
       //判断当前是否有商品，如果没有商品则无需清空
       if(!this.buyCarShop.length){
-        Toast('当前购物车无商品，无需清空!');
+        this.$toast('当前购物车无商品，无需清空!');
       }else{
         //弹出框
-        Dialog.confirm({
+        this.$dialog.confirm({
           title: '警告',
           message: '此操作将清空购物车数据,无法恢复,是否继续?',
         })
@@ -137,42 +128,42 @@ export default {
     //清空购物车请求函数
     axiosForClear(){
       //发送请求清空购物车
-      axios.delete(
+      this.$axios.delete(
           'user/clearAll'
       ).then(res=>{
         if (!res.data.code){
           this.getBuyCarShop();//触发vuex中购物车模块数据更新
-          Toast(res.data.msg);//成功提示
+          this.$toast.success(res.data.msg);//成功提示
         }else{
-          Toast('清空购物车失败');
+          this.$toast.fail('清空购物车失败');
         }
-      }).catch(()=>{Toast('服务器繁忙')})
+      }).catch(()=>{this.$toast('服务器繁忙')})
     },
     //删除商品  事件传参，该列商品id
     deleteShop(shopId){
       //发请求
-      axios.post(
+      this.$axios.post(
           'user/deleteShop',
           {shopId},
       ).then(res=>{
         if(!res.data.code){
-          Toast('已删除');//成功删除提示
+          this.$toast.success('已删除');//成功删除提示
           this.getBuyCarShop();//触发vuex中购物车信息模块数据更新
         } else{
-          Toast('删除失败');//删除失败提示
+          this.$toast.fail('删除失败');//删除失败提示
         }
-      }).catch(()=>{Toast('服务器繁忙')})
+      }).catch(()=>{this.$toast('服务器繁忙')})
     },
     //商品数量加减  传参商品数量、id
     updateNum(num,shopId){
       //当用户未输入时，不发送请求
       if(num==='') return;
       //发送请求·
-      axios.post(
+      this.$axios.post(
           'user/updateNum',
           {shopId,num},
       ).then(res=>{
-        if (res.data.code) Toast('数量修改失败')
+        if (res.data.code) this.$toast('数量修改失败')
       })
     },
     //跳转商品详情页
@@ -182,7 +173,7 @@ export default {
     //提交订单
     submitOrders(){
       //判断用户是否选中商品
-      if(!this.result.length) return Toast('您还没有选择宝贝哦!');
+      if(!this.result.length) return this.$toast('您还没有选择宝贝哦!');
       //跳转订单结算页面
       this.$router.push('/submitOrders')
     }

@@ -10,13 +10,9 @@
 </template>
 
 <script>
-import {NavBar} from 'vant'
 
 export default {
   name: "wallet",
-  components:{
-    [NavBar.name]:NavBar
-  },
   methods:{
     //返回上一个页面
     goBack(){

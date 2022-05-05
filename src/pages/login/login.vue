@@ -43,21 +43,10 @@
 </template>
 
 <script>
-//导入vant组件
-import { Form,Field,Button,Toast,Icon,NavBar,Uploader } from 'vant';
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   name: "login",
-  components:{
-    [Form.name]: Form,
-    [Field.name]:Field,
-    [Button.name]:Button,
-    [Toast.name]:Toast,
-    [Icon.name]:Icon,
-    [NavBar.name]:NavBar,
-    [Uploader.name]:Uploader
-  },
   data() {
     return {
       userName: '', //用户名
@@ -97,13 +86,13 @@ export default {
       //定义data储存需要发送的数据
       let data = {};
       //当收集的数据为空时，终止函数运行
-      if (userName === '' || userName.length < 5 || userName.length > 12) return Toast("用户名长度6~12位");
+      if (userName === '' || userName.length < 5 || userName.length > 12) return this.$toast("用户名长度6~12位");
       //验证
-      if (password === '' || password.length < 5 || password.length > 12) return Toast("密码长度6~12位");
+      if (password === '' || password.length < 5 || password.length > 12) return this.$toast("密码长度6~12位");
       //只有注册才需要验证昵称
-      if(text === '注册')  if (info.length > 6 || info.length < 3) return Toast("昵称长度3~6");
+      if(text === '注册')  if (info.length > 6 || info.length < 3) return this.$toast("昵称长度3~6");
       //判断是否上传图片
-      if(text === '注册')  if(userImg.length === 0) return Toast('请选择用户头像');
+      if(text === '注册')  if(userImg.length === 0) return this.$toast('请选择用户头像');
       //根据点击的按钮实现相关功能
       if(text === "登录"){
         tip = "登录";
@@ -115,21 +104,21 @@ export default {
         data = {userName,password,info,userImg};
       }
       //发送请求验证登录
-      axios.post(url,data).then(res=>{
+      this.$axios.post(url,data).then(res=>{
         //根据返回的数据判断是否登录成功
         if(!res.data.code){
           //当登录、注册时，成功后储存token
             //储存返回token
             window.localStorage.setItem("token",res.data.token);
           //提示登录成功 组件库自带方法
-          Toast.success(tip+'成功');
+          this.$toast.success(tip+'成功');
           //跳转页面
           this.$router.replace("/");
         }else{
-          Toast.fail(res.data.msg);
+          this.$toast.fail(res.data.msg);
         }
       }).catch(()=>{
-        Toast.fail("请稍后重试")
+        this.$toast.fail("请稍后重试")
       })
     },
     //点击跳转首页

@@ -21,21 +21,7 @@
   </div>
 <!-- 结算商品展示区 -->
   <div class="showShops">
-    <van-card
-        v-for="item in shops"
-        :key="item.id"
-        :num="item.num"
-        :price="item.price"
-        :desc="item.promise"
-        :title="item.font"
-        class="goods-card"
-        :thumb="item.img"
-    >
-      <!--  插槽，卡片标签      -->
-      <template #tags>
-        <van-tag plain type="danger">{{item.discount}}</van-tag>
-      </template>
-    </van-card>
+    <shop-card v-for="item in shops" :key="item.id" :shop-info="item"/>
   </div>
 <!-- 订单提交 -->
   <van-submit-bar :price="shopsTotalPrice" button-text="提交订单" @submit="submitOrders" />
@@ -70,37 +56,17 @@
 </template>
 
 <script>
-import {
-  NavBar,
-  AddressList,
-  Icon,
-  Card,
-  Tag,
-  SubmitBar,
-  ActionSheet,
-  Toast,
-  Popup,
-  PasswordInput,
-  NumberKeyboard
-} from 'vant'
-//导入axios配置对象
-import axios from '../../uitls/axios';
+import {PasswordInput, NumberKeyboard,Popup} from 'vant'
 import {mapState} from 'vuex';
+import ShopCard from "@/components/shopCard";
 
 export default {
   name: "submitOrders",
   components:{
-    [Tag.name]:Tag,
-    [Card.name]:Card,
-    [Icon.name]:Icon,
-    [Toast.name]:Toast,
-    [NavBar.name]:NavBar,
+    ShopCard,
     [Popup.name]:Popup,
     [PasswordInput.name]:PasswordInput,
     [NumberKeyboard.name]:NumberKeyboard,
-    [ActionSheet.name]:ActionSheet,
-    [SubmitBar.name]:SubmitBar,
-    [AddressList.name]:AddressList
   },
   data(){
     return {
@@ -156,7 +122,7 @@ export default {
     //验证支付密码
     checkPayword(){
 
-      axios.post(
+      this.$axios.post(
           'user/checkPayword',
           {payword:this.payword}
       ).then(res=>{
@@ -165,7 +131,7 @@ export default {
           this.passwordShow = false;
           this.payword = '';//清空输入框
           //支付动画  payToast为当前Toast实例 后续通过Toast的clear方法清除该实例，达到停止动画效果
-          let payToast = Toast.loading({
+          let payToast = this.$toast.loading({
             duration: 0, // 持续展示 toast
             message: '支付中...',
             forbidClick: true,
@@ -173,7 +139,7 @@ export default {
           //发送请求提交订单数据
           this.axiosForOrders('待发货',this.payKind,'支付成功',payToast);
         }else{
-          Toast('支付密码错误')
+          this.$toast('支付密码错误')
           this.errorInfo = res.data.msg;
         }
       })
@@ -214,33 +180,33 @@ export default {
       //只有为真时才能提交订单，默认result为真，只有重新支付时才看订单删除返回的结果
       if(result){
         //发送请求 提交订单
-        axios.post(
+        this.$axios.post(
             '/user/submitOrders',
             this.expressData(orderKind,payKind)
         ).then(res=>{
           //判断是否支付成功
           if(res.data.code){
-            Toast.fail(res.data.msg);//提交失败提示
+            this.$toast.fail(res.data.msg);//提交失败提示
           }else{
             // //定时器  延缓动画结束效果
             let timeout = setTimeout(()=>{
-              Toast.clear(toast);//成功后清除传过来的Toast实例,这样就不会展示加载中动画
-              Toast.success(msg);//提交成功提示
+              this.$toast.clear(toast);//成功后清除传过来的Toast实例,这样就不会展示加载中动画
+              this.$toast.success(msg);//提交成功提示
               this.goBack();//跳转相应页面
               this.$store.dispatch('orders/getOrders');//触发vuex更新订单数据
               // this.$router.replace({name:'buyCar'});//跳转购物车页面
               clearTimeout(timeout); //清除定时器
             },1000)
           }
-        }).catch(()=>{Toast.fail('服务器繁忙')})
+        }).catch(()=>{this.$toast.fail('服务器繁忙')})
       }else{
-        Toast('支付失败!原订单已删除！')
+        this.$toast('支付失败!原订单已删除！')
       }
     },
 
     //删除订单  在重新支付的时候需要先删除订单再提交订单
     deleteOrder(){
-    return axios.post(
+    return this.$axios.post(
           'user/deleteOrder',
           {id:this.shops[0].id}
       ).then(res=>{
@@ -250,7 +216,7 @@ export default {
         }else{
           return false;//失败返回false
         }
-      }).catch(()=>Toast('服务器繁忙'));
+      }).catch(()=>this.$toast('服务器繁忙'));
     },
     //支付选项点击事件，通过event对象获取点击项的文本内容
     payFor(event){
@@ -261,7 +227,7 @@ export default {
     //点击取消按钮处理函数
     cancelPay(){
       //发送请求，将本次结算的所有商品列为待支付，且跳转我的界面(replace)
-      let cancalPay = Toast.loading({
+      let cancalPay = this.$toast.loading({
         duration: 0, // 持续展示 toast
         message: '正在取消支付...',
         forbidClick: true,
@@ -281,7 +247,7 @@ export default {
     },
     //清空vuex中重新支付订单数据
     clearRePayInfo(cancalPay){
-      Toast.clear(cancalPay);//清除动画
+      this.$toast.clear(cancalPay);//清除动画
       //无论是否重新支付成功，都清空
       this.$store.commit('orders/rePayOrder',{});
     },
@@ -301,15 +267,15 @@ export default {
       //当路由参数address存在，则赋值给本地address变量，否则发请求获取
       if(this.$route.params.address) return this.address = this.$route.params.address;
       //发送请求获取默认地址
-      axios.get(
+      this.$axios.get(
           'user/myAddress',
       ).then(res=>{
         if (!res.data.code){
           //将服务器返回的地址数据保存  解构赋值
           return [this.address] = res.data.results.filter(val=>val.isDefault === 1); //返回的数据中默认地址交给address
         }
-        Toast(res.data.msg); //失败提示
-      }).catch(()=>{Toast('服务器繁忙')});
+        this.$toast(res.data.msg); //失败提示
+      }).catch(()=>{this.$toast('服务器繁忙')});
     }
   },
   //路由生命周期

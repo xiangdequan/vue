@@ -1,7 +1,6 @@
 //订单中心
 import axios from "@/uitls/axios";
 import {Toast} from "vant";
-
 export default {
     namespaced:true,//开启命名空间
     actions:{
@@ -14,9 +13,8 @@ export default {
                     //失败后将数据初始化不做操作
                     if(res.data.code){
                         context.commit('GetOrders',[]);
-                        Toast(res.data.msg);
                     }
-                })
+                }).catch(()=>{Toast('请求超时')});
         }
     },
     mutations:{
@@ -29,11 +27,14 @@ export default {
         rePayOrder(state,val){
             state.rePayOrder = val;//将传递的值储存下来
         },
-        //重新支付时，储存编辑好的地址
-
+        //点击的订单信息
+        orderInfo(state,val){
+            state.orderInfo = val; //将传递的数据保存
+        }
     },
     state:{
         orders:[],//保存所有订单
         rePayOrder:{},//用于保存重新支付的订单数据
+        orderInfo:{},//用于保存点击项的订单信息
     }
 }

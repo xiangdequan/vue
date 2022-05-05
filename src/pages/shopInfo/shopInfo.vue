@@ -30,16 +30,12 @@
 </template>
 
 <script>
-import {Icon, Tag, GoodsAction, GoodsActionIcon, GoodsActionButton, Toast} from 'vant'
-import axios from '../../uitls/axios';
+import {GoodsAction, GoodsActionIcon, GoodsActionButton} from 'vant'
 import isShowBadge from "@/mixin/isShowBadge"; //混合，内置过滤器、计算属性，用于处理购物车角标
 
 export default {
   name: "shopInfo",
   components:{
-    [Icon.name]:Icon,
-    [Tag.name]:Tag,
-    [Toast.name]:Toast,
     [GoodsAction.name]:GoodsAction,
     [GoodsActionIcon.name]:GoodsActionIcon,
     [GoodsActionButton.name]:GoodsActionButton
@@ -56,28 +52,21 @@ export default {
       this.$router.back();
     },
     addBuyCar(){
+      let shopInfo = {shopId:this.shopInfo.id,...this.shopInfo};//将当前的商品赋值给局部变量shopInfo(通过扩展符浅合并)
+      delete shopInfo.id;//删除商品id，加入购物车时为区分，将商品id字段名改为shopId，后面会通过处理
       //将当前商品id传给后台
-      axios.post(
+      this.$axios.post(
           'user/addBuyCar',
-          {
-          num:1,
-          discount:this.shopInfo.discount,
-          img:this.shopInfo.img,
-          font:this.shopInfo.font,
-          price:this.shopInfo.price,
-          shopId:this.shopInfo.id,
-          promise:this.shopInfo.promise
-          }
+          shopInfo
       ).then(res=>{
           this.schema(res.data);//验证请求结果
-      }).catch(()=>Toast('服务器繁忙'))
+      }).catch(()=>this.$toast('服务器繁忙'))
     },
+
     buyShop(){
       //因为当前的商品数据没有shopId这个属性，这个属性和当前的id值是一样的，所以新增一个
       //当前也没有num值，新增一个，默认为1
       let shops = [{num:1,shopId:this.shopInfo.id,...this.shopInfo}];
-      //当前商品数据包含了kind这个属性但是在订单提交页不需要这个属性，所以删除
-      delete shops[0].kind;
       //修改vuex当商品结算模块数据
       this.$store.commit('buyCar/GetBuyShopInfo',shops);
       //跳转结算页
@@ -87,24 +76,24 @@ export default {
     schema(data){
       if(!data.code){ //成功情况
         this.$store.dispatch('buyCar/getBuyCarShop');//触发vuex中购物车信息模块数据更新
-        Toast('已加入购物车');//成功提示
+        this.$toast('已加入购物车');//成功提示
       } else if(data.code === 2){ //失败情况：token失效
-        Toast(data.msg);//失败提示
+        this.$toast(data.msg);//失败提示
         this.$router.push('/login');//跳转登录页
       }else{ //失败情况
-        Toast(data.msg)//失败提示
+        this.$toast(data.msg)//失败提示
       }
     }
   },
   beforeMount() {
     //通过路由传参的id获取商品信息
-    axios.post(
+    this.$axios.post(
         'api/getShopInfo',
         {id:this.$route.params.id},
     ).then(res=>{
       //判断是否成功获取
       if(!res.data.code) return this.shopInfo = res.data.results[0];//将获取的值存到shopInfo
-    }).catch(()=>{Toast('服务器繁忙')})
+    }).catch(()=>{this.$toast('服务器繁忙')})
   }
 }
 </script>

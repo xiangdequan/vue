@@ -21,40 +21,33 @@
       <div class="order">
       <!--    单个订单    -->
         <div class="oneByOrder" v-for="item in fliterOrders" :key="item.id">
-          <!--    详情展示    -->
-          <van-card
-              :num="item.num"
-              :price="item.price"
-              :desc="item.promise"
-              :title="item.font"
-              class="goods-card"
-              :thumb="item.img"
-          >
-            <!--  插槽，卡片标签      -->
-            <template #tags>
-              <van-tag plain type="danger">{{item.discount}}</van-tag>
-            </template>
-          </van-card>
+          <!--    详情展示   点击跳转订单详情页 -->
+          <shop-card @click.native="goOrderInfo(item)" :shopInfo="item"/>
           <!--    操作    -->
           <div class="control">
             <!--     商品总价     -->
-            <div class="totalPrice"><b>({{item.orderKind}})</b>实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
+            <div class="totalPrice"><a>（{{item.orderKind}}）</a>实付：<a>￥</a><span>{{item.totalPrice}} </span>(免运费)</div>
             <!--    待支付订单操作      -->
             <div v-show="item.orderKind === '待支付'">
-              <van-button plain type="primary" color="red" size="small" hairline round @click="deleteOrder(item.id)">删除订单</van-button>
-              <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round @click="payFor(item)">立即支付</van-button>
+              <delete-order :id="item.id"/>
+              <cancel-order :id="item.id"/>
+              <re-pay :order="item"/>
             </div>
             <!--    待发货订单操作      -->
             <div v-show="item.orderKind === '待发货'">
-              <van-button plain type="primary" color="black" size="small" hairline round>申请退款</van-button>
-              <van-button plain type="primary" color="red" size="small" hairline round>催促发货</van-button>
+              <refund/>
+              <push-shipment/>
             </div>
             <!--    待收货订单操作      -->
             <div v-show="item.orderKind === '待收货'">
-              <van-button plain type="primary" color="black" size="small" hairline round>删除订单</van-button>
-              <van-button plain type="primary" color="black" size="small" hairline round>申请退款</van-button>
-              <van-button plain type="primary" color="black" size="small" hairline round>查看物流</van-button>
-              <van-button type="primary"  size="small" color="linear-gradient(to right, #ff6034, #ee0a24)" hairline round>确认收货</van-button>
+              <refund/>
+              <check-express/>
+              <sure-get/>
+            </div>
+          <!--     待评价订单操作       -->
+            <div v-show="item.orderKind === '待评价'">
+              <judge/>
+              <delete-order :id="item.id"/>
             </div>
           </div>
         </div>
@@ -65,23 +58,32 @@
 </template>
 
 <script>
-import {NavBar, Tab, Dialog, Icon, Tabs, Card, Tag, Button, Empty, Toast} from 'vant'
+import {Tab, Tabs} from 'vant'
 import {mapState} from "vuex";
-import axios from "@/uitls/axios";
+import ShopCard from "@/components/shopCard";
+import DeleteOrder from "@/pages/orders/buttons/deleteOrder";
+import RePay from "@/pages/orders/buttons/rePay";
+import CheckExpress from "@/pages/orders/buttons/checkExpress";
+import SureGet from "@/pages/orders/buttons/sureGet";
+import Refund from "@/pages/orders/buttons/refund";
+import PushShipment from "@/pages/orders/buttons/pushShipment";
+import Judge from "@/pages/orders/buttons/judge";
+import CancelOrder from "@/pages/orders/buttons/cancelOrder";
 
 export default {
   name: "myOrders",
   components:{
-    [NavBar.name]:NavBar,
-    [Icon.name]:Icon,
+    CancelOrder,
+    Judge,
+    PushShipment,
+    Refund,
+    SureGet,
+    CheckExpress,
+    RePay,
+    DeleteOrder,
+    ShopCard,
     [Tabs.name]:Tabs,
     [Tab.name]:Tab,
-    [Tag.name]:Tag,
-    [Card.name]:Card,
-    [Empty.name]:Empty,
-    [Toast.name]:Toast,
-    [Dialog.name]:Dialog,
-    [Button.name]:Button
   },
   data(){
     return {
@@ -108,36 +110,10 @@ export default {
     searchOrder(){
       alert('待开发')
     },
-    //支付  触发vuex订单模块重新支付订单数据  传参item,当前点击项
-    payFor(item){
-      this.$store.commit('orders/rePayOrder',item)
-      //跳转结算页面
-      this.$router.push('/submitOrders');
-    },
-    //删除订单 传参当前商品的id
-    deleteOrder(id){
-      //弹窗提示
-      Dialog.confirm({
-        title: '删除订单',
-        message: '是否删除当前订单信息?此操作无法恢复',
-      })
-          .then(() => {
-            // on confirm
-            axios.post(
-                'user/deleteOrder',
-                {id}
-            ).then(res=>{
-              if(!res.data.code){
-                this.$store.dispatch('orders/getOrders');//触发vuex订单模块数据更新
-                Toast.success(res.data.msg);//成功提醒
-              }else{
-                Toast.fail(res.data.msg);//失败提醒
-              }
-            }).catch(()=>Toast('服务器繁忙'));
-          })
-          .catch(() => {
-            // on cancel
-          });
+    //点击跳转订单详情页，触发vuex点击订单信息更新
+    goOrderInfo(item){
+      this.$store.commit('orders/orderInfo',item);//触发更新，将点击项信息传递过去
+      this.$router.push({name:'orderInfo',params:{index:this.active}});//跳转页面，并将当前导航栏索引传递过去
     }
   },
   mounted() {
@@ -153,6 +129,10 @@ export default {
 #myOrders{
   height: 100%;
   background-color: #fafafa;
+  overflow-y: scroll;
+  &::-webkit-scrollbar{
+    width: 0;
+  }
 
   //顶部导航
   .van-nav-bar{
@@ -171,10 +151,18 @@ export default {
     //内容
     .barContent{
       height: 100%;
+      overflow-y: scroll;
+      &::-webkit-scrollbar{
+        width: 0;
+      }
 
       //订单中心
       .order{
         height: 100%;
+        overflow-y: scroll;
+        &::-webkit-scrollbar{
+          width: 0;
+        }
 
         //单个订单
         .oneByOrder{
@@ -184,11 +172,6 @@ export default {
           //第一个订单
           &:first-child{
             margin-top: 6px;
-          }
-
-          //卡片
-          .van-card{
-            background-color: white;
           }
 
           //控制中心
@@ -207,7 +190,7 @@ export default {
               border: 1px solid #f6f6f6;
 
               //订单类型
-              b{
+              a:first-child{
                 float: left;
                 color: red;
                 margin-left: 9%;

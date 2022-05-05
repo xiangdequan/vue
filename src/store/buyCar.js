@@ -2,7 +2,6 @@
 //导入axios配置对象
 import axios from '../uitls/axios';
 import {Toast} from "vant";
-
 export default {
     namespaced:true,
     actions:{
@@ -14,10 +13,9 @@ export default {
             ).then(res=>{
                 if(!res.data.code) return context.commit('GetBuyCarShop',res.data.results); //请求成功后，将返回的数据存在本地变量
                 if(res.data.code){
-                    context.commit('GetBuyCarShop',[]);
-                    return  Toast(res.data.msg); //失败了就提示 并初始化数据
+                    context.commit('GetBuyCarShop',[]);//失败了就提示 并初始化数据
                 }
-            })
+            }).catch(()=>{Toast('请求超时')});
         }
     },
     mutations:{

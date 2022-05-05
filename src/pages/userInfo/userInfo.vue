@@ -17,18 +17,18 @@
     <van-cell icon="close" is-link title="注销账号" size="large" @click="isShow" />
   </van-cell-group>
   <van-action-sheet v-model="show" :title="title" :closeable="false">
-    <updateUserImg v-show="title === '用户头像修改'"/>
-    <updatePassword v-show="title === '用户密码修改'"/>
-    <updateName v-show="title === '用户昵称修改'"/>
-    <updateAll v-show="title === '修改所有信息'"/>
-    <deleteUser v-show="title === '注销账号'"/>
+    <updateUserImg v-if="title === '用户头像修改'"/>
+    <updatePassword v-if="title === '用户密码修改'"/>
+    <updateName v-if="title === '用户昵称修改'"/>
+    <updateAll v-if="title === '修改所有信息'"/>
+    <deleteUser v-if="title === '注销账号'"/>
   </van-action-sheet>
 </div>
 </template>
 
 <script>
 //引入vant
-import {NavBar,Toast,Dialog,Cell,CellGroup,ActionSheet,Form,Field,Button} from 'vant'
+import {Cell,CellGroup} from 'vant'
 import updatePassword from "@/pages/userInfo/updateInfo/updatePassword";
 import updateUserImg from "@/pages/userInfo/updateInfo/updateUserImg";
 import updateName from "@/pages/userInfo/updateInfo/updateName";
@@ -43,14 +43,8 @@ export default {
     updateName,
     updateAll,
     deleteUser,
-    [NavBar.name]:NavBar,
-    [Toast.name]:Toast,
     [Cell.name]:Cell,
-    [Form.name]:Form,
-    [Field.name]:Field,
-    [Button.name]:Button,
     [CellGroup.name]:CellGroup,
-    [ActionSheet.name]:ActionSheet
   },
   data(){
     return {
@@ -68,7 +62,7 @@ export default {
     //注销登录
     loginOut(){
       //弹窗提示
-      Dialog.confirm({
+      this.$dialog.confirm({
         title: '注销登录',
         message: '这将导致您将失去购物功能,重新登录后恢复',
       })
@@ -77,7 +71,7 @@ export default {
             //清除本地储存的token
             window.localStorage.removeItem('token');
             //提示
-            Toast('注销登录成功');
+            this.$toast('注销登录成功');
             //跳转登录页
             this.$router.replace('/login');
           }).catch(()=>{})

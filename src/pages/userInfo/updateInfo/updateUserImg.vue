@@ -6,17 +6,10 @@
 </template>
 
 <script>
-import {Button, Field, Toast,Uploader} from "vant";
 import updateInfo from "@/mixin/updateInfo";
 
 export default {
   name: "updateUserImg",
-  components:{
-    [Field.name]:Field,
-    [Button.name]:Button,
-    [Uploader.name]:Uploader,
-    [Toast.name]:Toast()
-  },
   mixins:[updateInfo], //注册混合
   data(){
     return {
@@ -32,7 +25,7 @@ export default {
     },
     updateUserImg(){
       //判断是否提交新头像
-      if (this.file.length === 0) return Toast('请上传新头像');
+      if (this.file.length === 0) return this.$toast('请上传新头像');
       //没问题发送请求 混合内封装的方法
       this.postAxios('updateUserImg',{userImg:this.file});
       //成功后清空已选择的图片

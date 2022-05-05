@@ -34,7 +34,7 @@
 
 <script>
 //导入vant
-import { Search,Icon,DropdownMenu, DropdownItem } from 'vant';
+import { DropdownMenu, DropdownItem } from 'vant';
 //导入shops组件
 import Shops from "@/components/shops";
 //导入mapSate
@@ -44,8 +44,6 @@ export default {
   name: "searchShop",
   components: {
     Shops,
-    [Search.name]:Search,
-    [Icon.name]:Icon,
     [DropdownMenu.name]:DropdownMenu,
     [DropdownItem.name]:DropdownItem
   },

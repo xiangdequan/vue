@@ -1,6 +1,8 @@
 //前置路由守卫  用于验证用户token
-import axios from "axios";
 import router from "@/router/router";
+//axios配置文件
+import axios from "../uitls/axios";
+import {Toast} from "vant";
 
 function isLogin(to,from,next){
     //判断是否要鉴权
@@ -13,12 +15,6 @@ function isLogin(to,from,next){
             //如果取到了token,判断有没有过期
             axios.get(
                 "/user/info",
-                {
-                    //设置请求头，向服务器验证token
-                    headers:{
-                        "Authorization":token
-                    }
-                }
             ).then(res=>{
                 //根据返回值判断token是否有效
                 if(!res.data.code){
@@ -27,6 +23,7 @@ function isLogin(to,from,next){
                 }else{
                     //无效去登录
                     router.push('/login')
+                    Toast('请先登录');
                 }
             })
         }

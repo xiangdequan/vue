@@ -26,7 +26,7 @@
 
 <script>
 //导入vant组件
-import {Toast,PullRefresh,Grid, GridItem,Swipe,SwipeItem} from "vant";
+import {PullRefresh,Swipe,SwipeItem} from "vant";
 //导入搜索框
 import search from "@/components/search";
 import shops from "@/components/shops";
@@ -36,12 +36,9 @@ import {mapState} from "vuex";
 export default {
   name: "home",
   components:{
-    [Toast.name]:Toast,
     [PullRefresh.name]:PullRefresh,
-    [Grid.name]:Grid,
     [Swipe.name]:Swipe,
     [SwipeItem.name]:SwipeItem,
-    [GridItem.name]:GridItem,
     search,
     shops
   },
@@ -68,6 +65,13 @@ export default {
       this.$router.push({name:'shopInfo',params:{id}})
     },
   },
+  beforeMount() {
+    //通过实例方法$watch方法开启监听，回调函数、配置为混合中的，当监听的属性变化时显示加载动画
+    this.$watch('allShops',this.watchCallback,this.isDeep)
+  },
+  mounted() {
+    this.showToast(this.allShops.length);//调用混合中定义的方法，用于判断是否需要加载动画
+  }
 }
 </script>
 

@@ -18,18 +18,15 @@
 </template>
 
 <script>
-import {AddressEdit, Toast} from 'vant';
+import {AddressEdit} from 'vant';
 import { areaList } from '@vant/area-data';
 //导入顶部导航组件
 import topBar from "@/pages/userAddress/topBar";
-//导入axios配置对象
-import axios from '../../uitls/axios';
 
 export default {
   name: "addAdress",
   components:{
     topBar,
-    [Toast.name]:Toast,
     [AddressEdit.name]:AddressEdit
   },
   data(){
@@ -76,30 +73,30 @@ export default {
       //当当前状态为修改时，新增id属性，从传递的该项数据中的id属性匹配数据库中的数据，以做到精准修改
       if(this.isShowDelete) data = {id: this.addressInfo.id,...data};
       //axios
-      axios.post(
+      this.$axios.post(
           'user/'+questUrl,
           data,
       ).then(res=>{
         if (!res.data.code){
-          Toast.success(res.data.msg);//成功提示
+          this.$toast.success(res.data.msg);//成功提示
           this.$router.replace('/myAddress');
         }else{
-          Toast.fail(res.data.msg)
+          this.$toast.fail(res.data.msg)
         }
       })
     },
 
     deleteAddress(){
       //删除收货地址  因为删除按钮只出现在修改状态下，所以可以通过修改项的id属性匹配相应的数据，然后删除
-      axios.post(
+      this.$axios.post(
           'user/deleteAddress',
           {id:this.addressInfo.id},
       ).then(res=>{
         if(!res.data.code){
           this.$router.back();
-          return Toast(res.data.msg);//成功提示
+          return this.$toast(res.data.msg);//成功提示
         }
-        Toast(res.data.msg); //失败提示
+        this.$toast(res.data.msg); //失败提示
       }).catch(err=>{console.log(err.message)});
     }
   },

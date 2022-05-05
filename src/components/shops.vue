@@ -25,8 +25,6 @@ shops:展示的商品(数组)
 </template>
 
 <script>
-//引入vant ,Empty
-import {Tag} from 'vant';
 
 export default {
   name: "shops",
@@ -51,10 +49,6 @@ export default {
       type: String
     },
   },
-  components:{
-    [Tag.name]:Tag,
-    // [Empty.name]:Empty
-  },
   data(){
     return {
 
@@ -75,7 +69,7 @@ export default {
 #shops{
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 5px;
+  padding: 2px 0;
   align-items: center;
 
   //只有未找到相关结果才显示

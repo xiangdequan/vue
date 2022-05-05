@@ -3,14 +3,8 @@
 </template>
 
 <script>
-//引入vant
-import {Search} from "vant"
-
 export default {
   name: "search",
-  components:{
-    [Search.name]:Search,
-  },
   methods:{
     //搜索跳转
     search(){
