@@ -21,14 +21,14 @@ exports.addShops = (req,res)=>{
 //获取商品信息
 exports.getShops = (req,res)=>{
     //sql
-    const sql = 'select*from shops';
+    const sql = `select*from shops limit ${req.body.pageStart},10`;
     //发送
     db.query(sql,(err,results)=>{
         //判断是否出错
         if(err) return res.rep("获取出错");
         //给客户端返回数据  商品图片、描述信息、价格、分类
         res.send({
-            code:'0',
+            code:0,
             results,
             msg:'成功'
         })

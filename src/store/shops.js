@@ -7,8 +7,8 @@ export default {
     namespaced: true,
     actions:{
         //获取所有商品数据
-        getAllShops(context){
-            axios.get('api/getShops')
+        getAllShops(context,val){
+            axios.post('api/getShops',{pageStart:val})
                 .then(res=>{
                     context.commit('updataShops',res.data.results);
                 })

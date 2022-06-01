@@ -12,10 +12,12 @@
 <!--  定位图标  -->
       <van-icon name="location" color="red" size="30px"/>
 <!--  地址内容  -->
-      <div>
+      <div v-if="Object.keys(address).length">
         <span>{{address.addressDetail}}</span>
         <span>{{address.name}} {{address.tel}}</span>
       </div>
+    <!--  当用户没有收货地址时显示 并阻止提交订单 -->
+      <div v-if="!Object.keys(address).length" @click="checkAddress">添加收货地址</div>
 <!--  地址编辑图标  -->
     <van-icon name="edit" size="20px" @click="checkAddress"/>
   </div>
@@ -116,6 +118,8 @@ export default {
 
     //提交订单  显示弹窗
     submitOrders(){
+      //判断当前用户是否有收货地址，如果没有就不弹出密码框，并提示先添加收货地址
+      if(!Object.keys(this.address).length) return this.$toast.fail('请先添加收货地址');
       this.show = true
     },
 
@@ -218,13 +222,15 @@ export default {
         }
       }).catch(()=>this.$toast('服务器繁忙'));
     },
+
     //支付选项点击事件，通过event对象获取点击项的文本内容
     payFor(event){
       this.show = false;//隐藏支付方式框
       this.passwordShow = true;//显示密码输入框
       this.payKind = event.target.innerText;//将点击的支付方式保存到变量
     },
-    //点击取消按钮处理函数
+
+    //点击密码框遮罩层取消支付处理函数
     cancelPay(){
       //发送请求，将本次结算的所有商品列为待支付，且跳转我的界面(replace)
       let cancalPay = this.$toast.loading({
@@ -245,12 +251,12 @@ export default {
       //提交待支付订单信息
       this.axiosForOrders('待支付','未支付','已取消支付',cancalPay);
     },
+
     //清空vuex中重新支付订单数据
     clearRePayInfo(cancalPay){
       this.$toast.clear(cancalPay);//清除动画
-      //无论是否重新支付成功，都清空
-      this.$store.commit('orders/rePayOrder',{});
     },
+
     //获取正确商品数据
     getRightInfo(){
       //判断vuex单个商品结算模块是否有数据，判断路由是否传参,若没有就使用计算属性内购物车已选中商品数据
@@ -262,6 +268,7 @@ export default {
         this.shopsTotalPrice = this.totalPrice;
       }
     },
+
     //获取合适地址
     getRightAddres(){
       //当路由参数address存在，则赋值给本地address变量，否则发请求获取
@@ -278,14 +285,16 @@ export default {
       }).catch(()=>{this.$toast('服务器繁忙')});
     }
   },
+
   //路由生命周期
   beforeRouteLeave(to,from,next){
-    if (to.name === 'shopInfo'){
-      //假如是从商品结算页进入本页面时，无论是否支付，都清空vuex中单个商品结算的商品数据
-      this.$store.commit('buyCar/GetBuyShopInfo',[]);
-    }
+    //假如是从商品结算页进入本页面时，无论是否支付，离开当前页面返回商品详情页，都清空vuex中单个商品结算的商品数据
+    if (to.name === 'shopInfo')  this.$store.commit('buyCar/GetBuyShopInfo',[]);
+    //假如是从我的订单页面进入本页面时，无论是否支付，离开当前页面返回订单详情页，都清空vuex中重新支付的商品数据
+    if(to.name === 'myOrders' || to.name === 'orderInfo')   this.$store.commit('orders/rePayOrder',{});
     next();
   },
+
   mounted() {
     //用户可以从商品详情页、购物车页面、订单详情页进入该页面，所以要对数据进行三层验证，判断用户从哪个页面进入
     //判断vuex订单模块重新支付订单是否有数据，如果有数据表明是重新支付的订单，将使用其数据,否则进行下一阶段判断

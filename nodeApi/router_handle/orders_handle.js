@@ -4,10 +4,6 @@ const db = require('../mysql/mysql');
 
 //提交订单路由处理函数
 exports.submitOrders = (req,res)=>{
-    // console.log(Object.keys(req.body[0]))
-    // console.log(Object.values(req.body[0]))
-    //定义sql
-    // const sql = `INSERT INTO myorders (orderNumber,totalPrice,name,orderAddress,tel,orderKind,orderTime,payKind,userName,shopId,num,price,font,promise,img,discount) VALUES ?`;
     const sql = `insert into myorders set ?`;
     //操作数据库
     db.query(sql,[...req.body],(err,results)=>{
