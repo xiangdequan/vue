@@ -2,7 +2,8 @@ import axios from "axios";
 
 //axios全局配置基础路径
 // axios.defaults.baseURL = "http://10.20.25.15/";
-axios.defaults.baseURL = 'http://192.168.43.83/';
+// axios.defaults.baseURL = "http://127.0.0.1/";
+axios.defaults.baseURL = 'http://192.168.174.117/';
 //全局配置请求超时时间，2分钟
 // axios.defaults.timeout = 120*1000;
 //请求拦截器
